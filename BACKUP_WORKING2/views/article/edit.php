@@ -56,7 +56,7 @@
     <?php endif; ?>
     
     <?php if (isset($article) && $article): ?>
-        <form method="post" action="<?php echo $baseUrl; ?>edit/<?php echo $article->id; ?>">
+        <form method="post" action="?action=edit&id=<?php echo $article->id; ?>">
             <div class="form-group">
                 <label for="title">Title:</label>
                 <input type="text" id="title" name="title" placeholder="Enter article title" required 
@@ -70,17 +70,17 @@
             
             <div>
                 <input type="submit" value="Update Article">
-                <a href="<?php echo $baseUrl; ?>index" class="btn-back">Cancel</a>
+                <a href="?action=index" class="btn-back">Cancel</a>
             </div>
         </form>
     <?php else: ?>
         <div class="error">
             Article not found!
         </div>
-        <p><a href="<?php echo $baseUrl; ?>index" class="btn-back">← Back to Articles List</a></p>
+        <p><a href="?action=index" class="btn-back">← Back to Articles List</a></p>
     <?php endif; ?>
     
     <hr>
-    <p><a href="<?php echo $baseUrl; ?>index">← Back to Articles List</a></p>
+    <p><a href="?action=index">← Back to Articles List</a></p>
 </body>
 </html>

@@ -20,35 +20,14 @@ function getBaseUrl() {
     return $baseUrl;
 }
 
-// Helper function for generating clean URLs
-function url($path = '') {
-    global $baseUrl;
-    return $baseUrl . ltrim($path, '/');
-}
-
 $baseUrl = getBaseUrl();
 
 require_once 'connection.php';
 require_once 'models/Article.php';
 require_once 'controllers/ArticleController.php';
 
-// Parse URL segments for clean URLs
-$url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$urlSegments = explode('/', trim($url, '/'));
-
-// Remove the base path segments (for subfolder setup)
-// For /mvc_crud/edit/5, we want ['edit', '5']
-$basePath = trim(dirname($_SERVER['SCRIPT_NAME']), '/');
-if (!empty($basePath)) {
-    $baseSegments = explode('/', $basePath);
-    $urlSegments = array_slice($urlSegments, count($baseSegments));
-}
-
-// Get action from URL segments
-$action = !empty($urlSegments[0]) ? $urlSegments[0] : 'index';
-
-// Make URL segments globally available for controllers
-$GLOBALS['urlSegments'] = $urlSegments;
+$action_old = !empty($urlSegments[1]) ? $urlSegments[1] : 'index';
+$action = $_GET['action'] ?? 'index';
 
 $controller = new ArticleController();
 

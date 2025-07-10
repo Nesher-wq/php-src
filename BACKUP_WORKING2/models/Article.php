@@ -12,7 +12,8 @@ class Article {
     }
 
     public static function all() {
-        $db = Connection::getInstance();
+        $database = new Connection();
+        $db = $database->getConnection();
         
         $query = "SELECT * FROM articles ORDER BY id DESC";
         $stmt = $db->prepare($query);
@@ -29,7 +30,8 @@ class Article {
     }
 
     public static function find($id) {
-        $db = Connection::getInstance();
+        $database = new Connection();
+        $db = $database->getConnection();
         
         $query = "SELECT * FROM articles WHERE id = :id";
         $stmt = $db->prepare($query);
@@ -48,7 +50,8 @@ class Article {
     }
 
     public function create() {
-        $db = Connection::getInstance();
+        $database = new Connection();
+        $db = $database->getConnection();
         
         $query = "INSERT INTO articles (title, content) VALUES (:title, :content)";
         $stmt = $db->prepare($query);
@@ -68,7 +71,8 @@ class Article {
     }
 
     public function update() {
-        $db = Connection::getInstance();
+        $database = new Connection();
+        $db = $database->getConnection();
         
         $query = "UPDATE articles SET title = :title, content = :content WHERE id = :id";
         $stmt = $db->prepare($query);
@@ -85,7 +89,8 @@ class Article {
     }
 
     public function delete() {
-        $db = Connection::getInstance();
+        $database = new Connection();
+        $db = $database->getConnection();
         
         $query = "DELETE FROM articles WHERE id = :id";
         $stmt = $db->prepare($query);

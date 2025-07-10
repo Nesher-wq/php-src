@@ -18,7 +18,7 @@ class ArticleController {
             $result = $article->create();
             
             if ($result) {
-                header('Location: ' . $baseUrl . 'index');
+                header('Location: ?action=index');
                 exit;
             } else {
                 $error = "Failed to create article";
@@ -30,10 +30,7 @@ class ArticleController {
 
     public function edit() {
         global $baseUrl;
-        
-        // Get ID from URL segments
-        global $urlSegments;
-        $id = !empty($urlSegments[1]) ? $urlSegments[1] : null;
+        $id = $_GET['id'] ?? null;
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $article = Article::find($id);
@@ -43,7 +40,7 @@ class ArticleController {
                 $article->id = $id;
                 
                 if ($article->update()) {
-                    header('Location: ' . $baseUrl . 'index');
+                    header('Location: ?action=index');
                     exit;
                 } else {
                     $error = "Failed to update article";
@@ -58,10 +55,7 @@ class ArticleController {
 
     public function delete() {
         global $baseUrl;
-        
-        // Get ID from URL segments
-        global $urlSegments;
-        $id = !empty($urlSegments[1]) ? $urlSegments[1] : null;
+        $id = $_GET['id'] ?? null;
         
         if ($id) {
             $article = Article::find($id);
@@ -71,7 +65,7 @@ class ArticleController {
             }
         }
         
-        header('Location: ' . $baseUrl . 'index');
+        header('Location: ?action=index');
         exit;
     }
 }

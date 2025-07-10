@@ -13,18 +13,6 @@ class Connection {
     private $dbname = DB_NAME;
     private $charset = DB_CHARSET;
     
-    // Static variable to store the connection (Singleton pattern)
-    private static $instance = null;
-    
-    // Static method to get connection (reuses existing connection)
-    public static function getInstance() {
-        if (self::$instance === null) {
-            $connection = new Connection();
-            self::$instance = $connection->getConnection();
-        }
-        return self::$instance;
-    }
-    
     public function getConnection() {
         
         try {
