@@ -46,7 +46,6 @@
         </div>
     <?php endif; ?>
     
-    <!-- ✅ FIXED: Use relative URL -->
     <form method="post" action="?action=create">
         <div>
             <label for="title">Title:</label>

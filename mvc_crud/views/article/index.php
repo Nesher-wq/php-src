@@ -17,7 +17,6 @@
 <body>
     <h1>Articles</h1>
     
-    <!-- ✅ FIXED: Use relative URL -->
     <a href="?action=create" class="btn btn-create">Create New Article</a>
     
     <?php if (!empty($articles) && is_array($articles)): ?>
@@ -37,7 +36,6 @@
                         <td><?php echo htmlspecialchars($article->title); ?></td>
                         <td><?php echo htmlspecialchars(substr($article->content, 0, 100)); ?></td>
                         <td>
-                            <!-- ✅ FIXED: Use relative URLs -->
                             <a href="?action=edit&id=<?php echo $article->id; ?>" class="btn btn-edit">Edit</a>
                             <a href="?action=delete&id=<?php echo $article->id; ?>" class="btn btn-delete" 
                                onclick="return confirm('Are you sure you want to delete this article?')">Delete</a>

@@ -56,7 +56,6 @@
     <?php endif; ?>
     
     <?php if (isset($article) && $article): ?>
-        <!-- ✅ FIXED: Use relative URL -->
         <form method="post" action="?action=edit&id=<?php echo $article->id; ?>">
             <div class="form-group">
                 <label for="title">Title:</label>
@@ -71,7 +70,6 @@
             
             <div>
                 <input type="submit" value="Update Article">
-                <!-- ✅ FIXED: Use relative URL -->
                 <a href="?action=index" class="btn-back">Cancel</a>
             </div>
         </form>
@@ -79,12 +77,10 @@
         <div class="error">
             Article not found!
         </div>
-        <!-- ✅ FIXED: Use relative URL -->
         <p><a href="?action=index" class="btn-back">← Back to Articles List</a></p>
     <?php endif; ?>
     
     <hr>
-    <!-- ✅ FIXED: Use relative URL -->
     <p><a href="?action=index">← Back to Articles List</a></p>
 </body>
 </html>

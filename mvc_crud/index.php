@@ -4,7 +4,6 @@ $requestUri = $_SERVER['REQUEST_URI'];
 $phpSelf = $_SERVER['PHP_SELF'];
 $scriptName = $_SERVER['SCRIPT_NAME'];
 
-// ✅ FIXED: Add trailing slash
 function getBaseUrl() {
     $baseUrl = dirname($_SERVER['SCRIPT_NAME']);
     
@@ -27,6 +26,7 @@ require_once 'connection.php';
 require_once 'models/Article.php';
 require_once 'controllers/ArticleController.php';
 
+$action_old = !empty($urlSegments[1]) ? $urlSegments[1] : 'index';
 $action = $_GET['action'] ?? 'index';
 
 $controller = new ArticleController();

@@ -18,7 +18,6 @@ class ArticleController {
             $result = $article->create();
             
             if ($result) {
-                // ✅ FIXED: Gebruik relatieve redirect
                 header('Location: ?action=index');
                 exit;
             } else {
@@ -41,7 +40,6 @@ class ArticleController {
                 $article->id = $id;
                 
                 if ($article->update()) {
-                    // ✅ FIXED: Gebruik relatieve redirect
                     header('Location: ?action=index');
                     exit;
                 } else {
@@ -67,7 +65,6 @@ class ArticleController {
             }
         }
         
-        // ✅ FIXED: Gebruik relatieve redirect
         header('Location: ?action=index');
         exit;
     }

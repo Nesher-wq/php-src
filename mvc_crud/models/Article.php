@@ -11,7 +11,6 @@ class Article {
         $this->content = $content;
     }
 
-    // ✅ FIXED: Return Article objects instead of stdClass
     public static function all() {
         $database = new Connection();
         $db = $database->getConnection();
@@ -30,7 +29,6 @@ class Article {
         return $articles;
     }
 
-    // ✅ FIXED: Return Article object instead of stdClass
     public static function find($id) {
         $database = new Connection();
         $db = $database->getConnection();
@@ -72,7 +70,6 @@ class Article {
         return false;
     }
 
-    // ✅ ADD: Update method
     public function update() {
         $database = new Connection();
         $db = $database->getConnection();
@@ -91,7 +88,6 @@ class Article {
         return $stmt->execute();
     }
 
-    // ✅ ADD: Delete method
     public function delete() {
         $database = new Connection();
         $db = $database->getConnection();
