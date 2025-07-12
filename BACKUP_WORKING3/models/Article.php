@@ -12,13 +12,20 @@ class Article {
     }
 
     public static function all() {
-        $articles = [];
         $database = new Connection();
         $db = $database->getConnection();
         
-        $req = $db->query('SELECT * FROM articles');
-        $articles = $req->fetchAll(PDO::FETCH_OBJ);
-
+        $query = "SELECT * FROM articles ORDER BY id DESC";
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        
+        $articles = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $article = new Article($row['title'], $row['content']);
+            $article->id = $row['id'];
+            $articles[] = $article;
+        }
+        
         return $articles;
     }
 
@@ -30,7 +37,16 @@ class Article {
         $stmt = $db->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_OBJ);
+        
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($row) {
+            $article = new Article($row['title'], $row['content']);
+            $article->id = $row['id'];
+            return $article;
+        }
+        
+        return null;
     }
 
     public function create() {
@@ -61,6 +77,7 @@ class Article {
         $query = "UPDATE articles SET title = :title, content = :content WHERE id = :id";
         $stmt = $db->prepare($query);
 
+        // Sanitize input
         $this->title = htmlspecialchars(strip_tags($this->title));
         $this->content = htmlspecialchars(strip_tags($this->content));
 
@@ -78,6 +95,7 @@ class Article {
         $query = "DELETE FROM articles WHERE id = :id";
         $stmt = $db->prepare($query);
         $stmt->bindParam(':id', $this->id);
+
         return $stmt->execute();
     }
 }

@@ -56,6 +56,7 @@
     <?php endif; ?>
     
     <?php if (isset($article) && $article): ?>
+        <!-- ✅ Form POST naar hetzelfde Clean URL -->
         <form method="post" action="<?php echo $baseUrl; ?>edit/<?php echo $article->id; ?>">
             <div class="form-group">
                 <label for="title">Title:</label>
@@ -70,17 +71,17 @@
             
             <div>
                 <input type="submit" value="Update Article">
-                <a href="<?php echo $baseUrl; ?>index" class="btn-back">Cancel</a>
+                <a href="<?php echo $baseUrl; ?>" class="btn-back">Cancel</a>
             </div>
         </form>
     <?php else: ?>
         <div class="error">
             Article not found!
         </div>
-        <p><a href="<?php echo $baseUrl; ?>index" class="btn-back">← Back to Articles List</a></p>
+        <p><a href="<?php echo $baseUrl; ?>" class="btn-back">← Back to Articles List</a></p>
     <?php endif; ?>
     
     <hr>
-    <p><a href="<?php echo $baseUrl; ?>index">← Back to Articles List</a></p>
+    <p><a href="<?php echo $baseUrl; ?>">← Back to Articles List</a></p>
 </body>
 </html>

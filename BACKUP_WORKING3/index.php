@@ -1,20 +1,18 @@
 <?php
 
-$requestUri = $_SERVER['REQUEST_URI'];
-$phpSelf = $_SERVER['PHP_SELF'];
-$scriptName = $_SERVER['SCRIPT_NAME'];
-
 function getBaseUrl() {
     $baseUrl = dirname($_SERVER['SCRIPT_NAME']);
+    
+    $baseUrl = str_replace('\\', '/', $baseUrl);
     
     // Zorg dat het eindigt met een slash als het niet de root is
     if ($baseUrl !== '/' && !str_ends_with($baseUrl, '/')) {
         $baseUrl .= '/';
     }
     
-    // Als het de root is, gebruik lege string
+    // Voor root deployment, gebruik absolute path
     if ($baseUrl === '/') {
-        $baseUrl = '';
+        $baseUrl = '/';
     }
     
     return $baseUrl;
@@ -26,10 +24,24 @@ require_once 'connection.php';
 require_once 'models/Article.php';
 require_once 'controllers/ArticleController.php';
 
-$action_old = !empty($urlSegments[1]) ? $urlSegments[1] : 'index';
-$action = $_GET['action'] ?? 'index';
+$url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$urlSegments = explode('/', trim($url, '/'));
 
-$controller = new ArticleController();
+$basePathRaw = dirname($_SERVER['SCRIPT_NAME']);
+$basePathNormalized = str_replace('\\', '/', $basePathRaw);
+$basePath = trim($basePathNormalized, '/');
+
+// Only remove base path if it's not empty (not root)
+if (!empty($basePath)) {
+    $baseSegments = explode('/', $basePath);
+    $urlSegments = array_slice($urlSegments, count($baseSegments));
+}
+
+// Use URL segments for action
+$action = !empty($urlSegments[0]) ? $urlSegments[0] : 'index';
+
+// Pass URL segments to controller
+$controller = new ArticleController($urlSegments);
 
 switch ($action) {
     case 'index':

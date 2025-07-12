@@ -1,29 +1,21 @@
 <?php
 
-$requestUri = $_SERVER['REQUEST_URI'];
-$phpSelf = $_SERVER['PHP_SELF'];
-$scriptName = $_SERVER['SCRIPT_NAME'];
-
 function getBaseUrl() {
     $baseUrl = dirname($_SERVER['SCRIPT_NAME']);
+    
+    $baseUrl = str_replace('\\', '/', $baseUrl);
     
     // Zorg dat het eindigt met een slash als het niet de root is
     if ($baseUrl !== '/' && !str_ends_with($baseUrl, '/')) {
         $baseUrl .= '/';
     }
     
-    // Als het de root is, gebruik lege string
+    // Voor root deployment, gebruik absolute path
     if ($baseUrl === '/') {
-        $baseUrl = '';
+        $baseUrl = '/';
     }
     
     return $baseUrl;
-}
-
-// Helper function for generating clean URLs
-function url($path = '') {
-    global $baseUrl;
-    return $baseUrl . ltrim($path, '/');
 }
 
 $baseUrl = getBaseUrl();
@@ -32,25 +24,24 @@ require_once 'connection.php';
 require_once 'models/Article.php';
 require_once 'controllers/ArticleController.php';
 
-// Parse URL segments for clean URLs
 $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $urlSegments = explode('/', trim($url, '/'));
 
-// Remove the base path segments (for subfolder setup)
-// For /mvc_crud/edit/5, we want ['edit', '5']
-$basePath = trim(dirname($_SERVER['SCRIPT_NAME']), '/');
+$basePathRaw = dirname($_SERVER['SCRIPT_NAME']);
+$basePathNormalized = str_replace('\\', '/', $basePathRaw);
+$basePath = trim($basePathNormalized, '/');
+
+// Only remove base path if it's not empty (not root)
 if (!empty($basePath)) {
     $baseSegments = explode('/', $basePath);
     $urlSegments = array_slice($urlSegments, count($baseSegments));
 }
 
-// Get action from URL segments
+// Use URL segments for action
 $action = !empty($urlSegments[0]) ? $urlSegments[0] : 'index';
 
-// Make URL segments globally available for controllers
-$GLOBALS['urlSegments'] = $urlSegments;
-
-$controller = new ArticleController();
+// Pass URL segments to controller
+$controller = new ArticleController($urlSegments);
 
 switch ($action) {
     case 'index':

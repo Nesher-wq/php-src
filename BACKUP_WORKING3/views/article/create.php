@@ -46,6 +46,7 @@
         </div>
     <?php endif; ?>
     
+    <!-- ✅ Form POST naar hetzelfde Clean URL -->
     <form method="post" action="<?php echo $baseUrl; ?>create">
         <div>
             <label for="title">Title:</label>
@@ -59,11 +60,11 @@
         
         <div>
             <input type="submit" value="Create Article">
-            <a href="<?php echo $baseUrl; ?>index" class="btn-back">Cancel</a>
+            <a href="<?php echo $baseUrl; ?>" class="btn-back">Cancel</a>
         </div>
     </form>
     
     <hr>
-    <p><a href="<?php echo $baseUrl; ?>index">← Back to Articles List</a></p>
+    <p><a href="<?php echo $baseUrl; ?>">← Back to Articles List</a></p>
 </body>
 </html>

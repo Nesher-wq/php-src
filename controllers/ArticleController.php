@@ -2,9 +2,16 @@
 require_once 'models/Article.php';
 
 class ArticleController {
+    
+    private $urlSegments;
+    
+    // Accept URL segments in constructor
+    public function __construct($urlSegments = []) {
+        $this->urlSegments = $urlSegments;
+    }
 
     public function index() {
-        global $baseUrl;  // ← Maak beschikbaar voor view
+        global $baseUrl;
         $articles = Article::all();
         include 'views/article/index.php';
     }
@@ -12,43 +19,29 @@ class ArticleController {
     public function create() {
         global $baseUrl;
         
-        // ✅ Debug: Laat altijd zien dat method wordt aangeroepen
-        echo "<h4>CONTROLLER CREATE() METHOD CALLED</h4>";
-        echo "Request method in controller: " . $_SERVER['REQUEST_METHOD'] . "<br>";
-        
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            echo "<h4>POST PROCESSING STARTED</h4>";
-            echo "POST data received:<br>";
-            echo "Title: " . ($_POST['title'] ?? 'NOT SET') . "<br>";
-            echo "Content: " . ($_POST['content'] ?? 'NOT SET') . "<br><br>";
-            
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {            
             $article = new Article($_POST['title'], $_POST['content']);
             
-            echo "Article object created:<br>";
-            echo "Title: " . $article->title . "<br>";
-            echo "Content: " . $article->content . "<br><br>";
-            
             $result = $article->create();
-            echo "Create result: " . ($result ? 'SUCCESS' : 'FAILED') . "<br><br>";
             
             if ($result) {
-                echo "About to redirect...<br>";
-                header('Location: ' . $baseUrl . '?action=index');
+                // Clean URL redirect
+                header('Location: ' . $baseUrl);
                 exit;
             } else {
                 $error = "Failed to create article";
-                echo "Error: " . $error . "<br>";
             }
-        } else {
-            echo "<h4>SHOWING CREATE FORM (GET REQUEST)</h4>";
         }
         
         include 'views/article/create.php';
     }
 
     public function edit() {
-        global $baseUrl;  // ← Maak beschikbaar voor view
-        $id = $_GET['id'] ?? null;
+        global $baseUrl;
+        
+        // ✅ REQUIRED: Get ID from URL segments
+        // URL: /edit/7 → $urlSegments = ['edit', '7']
+        $id = !empty($this->urlSegments[1]) ? $this->urlSegments[1] : null;
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $article = Article::find($id);
@@ -58,7 +51,7 @@ class ArticleController {
                 $article->id = $id;
                 
                 if ($article->update()) {
-                    header('Location: ' . $baseUrl . '?action=index');
+                    header('Location: ' . $baseUrl);
                     exit;
                 } else {
                     $error = "Failed to update article";
@@ -72,8 +65,11 @@ class ArticleController {
     }
 
     public function delete() {
-        global $baseUrl;  // ← Voor redirect
-        $id = $_GET['id'] ?? null;
+        global $baseUrl;
+        
+        // ✅ REQUIRED: Get ID from URL segments
+        // URL: /delete/7 → $urlSegments = ['delete', '7']
+        $id = !empty($this->urlSegments[1]) ? $this->urlSegments[1] : null;
         
         if ($id) {
             $article = Article::find($id);
@@ -83,7 +79,7 @@ class ArticleController {
             }
         }
         
-        header('Location: ' . $baseUrl . '?action=index');
+        header('Location: ' . $baseUrl);
         exit;
     }
 }

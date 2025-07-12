@@ -2,6 +2,13 @@
 require_once 'models/Article.php';
 
 class ArticleController {
+    
+    private $urlSegments;
+    
+    // Accept URL segments in constructor
+    public function __construct($urlSegments = []) {
+        $this->urlSegments = $urlSegments;
+    }
 
     public function index() {
         global $baseUrl;
@@ -18,7 +25,8 @@ class ArticleController {
             $result = $article->create();
             
             if ($result) {
-                header('Location: ' . $baseUrl . 'index');
+                // Clean URL redirect
+                header('Location: ' . $baseUrl);
                 exit;
             } else {
                 $error = "Failed to create article";
@@ -31,9 +39,9 @@ class ArticleController {
     public function edit() {
         global $baseUrl;
         
-        // Get ID from URL segments
-        global $urlSegments;
-        $id = !empty($urlSegments[1]) ? $urlSegments[1] : null;
+        // ✅ REQUIRED: Get ID from URL segments
+        // URL: /edit/7 → $urlSegments = ['edit', '7']
+        $id = !empty($this->urlSegments[1]) ? $this->urlSegments[1] : null;
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $article = Article::find($id);
@@ -43,7 +51,7 @@ class ArticleController {
                 $article->id = $id;
                 
                 if ($article->update()) {
-                    header('Location: ' . $baseUrl . 'index');
+                    header('Location: ' . $baseUrl);
                     exit;
                 } else {
                     $error = "Failed to update article";
@@ -59,9 +67,9 @@ class ArticleController {
     public function delete() {
         global $baseUrl;
         
-        // Get ID from URL segments
-        global $urlSegments;
-        $id = !empty($urlSegments[1]) ? $urlSegments[1] : null;
+        // ✅ REQUIRED: Get ID from URL segments
+        // URL: /delete/7 → $urlSegments = ['delete', '7']
+        $id = !empty($this->urlSegments[1]) ? $this->urlSegments[1] : null;
         
         if ($id) {
             $article = Article::find($id);
@@ -71,7 +79,7 @@ class ArticleController {
             }
         }
         
-        header('Location: ' . $baseUrl . 'index');
+        header('Location: ' . $baseUrl);
         exit;
     }
 }

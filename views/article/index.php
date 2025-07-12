@@ -17,6 +17,7 @@
 <body>
     <h1>Articles</h1>
     
+    <!-- ✅ Clean URL link -->
     <a href="<?php echo $baseUrl; ?>create" class="btn btn-create">Create New Article</a>
     
     <?php if (!empty($articles) && is_array($articles)): ?>
@@ -36,6 +37,7 @@
                         <td><?php echo htmlspecialchars($article->title); ?></td>
                         <td><?php echo htmlspecialchars(substr($article->content, 0, 100)); ?></td>
                         <td>
+                            <!-- ✅ Clean URLs -->
                             <a href="<?php echo $baseUrl; ?>edit/<?php echo $article->id; ?>" class="btn btn-edit">Edit</a>
                             <a href="<?php echo $baseUrl; ?>delete/<?php echo $article->id; ?>" class="btn btn-delete" 
                                onclick="return confirm('Are you sure you want to delete this article?')">Delete</a>
@@ -52,6 +54,6 @@
     <?php endif; ?>
     
     <hr>
-    <p><a href="<?php echo $baseUrl; ?>index">← Refresh Articles List</a></p>
+    <p><a href="<?php echo $baseUrl; ?>">← Refresh Articles List</a></p>
 </body>
 </html>
