@@ -39,8 +39,6 @@ class ArticleController {
     public function edit() {
         global $baseUrl;
         
-        // ✅ REQUIRED: Get ID from URL segments
-        // URL: /edit/7 → $urlSegments = ['edit', '7']
         $id = !empty($this->urlSegments[1]) ? $this->urlSegments[1] : null;
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -67,8 +65,6 @@ class ArticleController {
     public function delete() {
         global $baseUrl;
         
-        // ✅ REQUIRED: Get ID from URL segments
-        // URL: /delete/7 → $urlSegments = ['delete', '7']
         $id = !empty($this->urlSegments[1]) ? $this->urlSegments[1] : null;
         
         if ($id) {
