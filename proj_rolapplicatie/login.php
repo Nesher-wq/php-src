@@ -1,83 +1,124 @@
-<?php // login.php
+<?php 
+/**
+ * LOGIN EN DATABASE CONFIGURATIE BESTAND
+ * 
+ * Dit bestand bevat:
+ * - Database configuratie instellingen
+ * - Gebruikers authenticatie logica
+ * - Sessie management na succesvol inloggen
+ * - Redirect functionaliteit
+ */
+
+// =====================================================
+// SESSIE MANAGEMENT
+// =====================================================
 // Controleer of sessie al actief is voordat we session_start() aanroepen
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-  $host = 'localhost';    // Change as necessary
-  $database = 'rolapplicatie'; // Change as necessary
-  $dbuser = 'root';         // Change as necessary
-  $pass = 'mysql';        // Change as necessary
-  $chrs = 'utf8mb4';
-  $attr = "mysql:host=$host;dbname=$database;charset=$chrs";
-  $opts =
-  [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
-  ];
+// =====================================================
+// DATABASE CONFIGURATIE
+// =====================================================
+// Database verbinding parameters - pas aan naar jouw setup
+$host = 'localhost';              // MySQL server host
+$database = 'rolapplicatie';      // Database naam
+$dbuser = 'root';                 // MySQL gebruikersnaam
+$pass = 'mysql';                  // MySQL wachtwoord
+$chrs = 'utf8mb4';               // Character set voor Unicode ondersteuning
 
-// Alleen login logica uitvoeren als dit een POST request is
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    echo "POST request ontvangen!<br>";
+// PDO connectie string en opties
+$attr = "mysql:host=$host;dbname=$database;charset=$chrs";
+$opts = [
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,  // Gooi exceptions bij fouten
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,        // Associatieve arrays als resultaat
+    PDO::ATTR_EMULATE_PREPARES   => false,                   // Echte prepared statements
+];
+
+// =====================================================
+// LOGIN FORM PROCESSING
+// =====================================================
+
+// Alleen login logica uitvoeren als dit een POST request is EN als het een login poging is
+// Controleert ook dat het NIET gaat om admin/user formulieren (die hebben andere veldnamen)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset($_POST['password']) && !isset($_POST['create_user']) && !isset($_POST['edit_user']) && !isset($_POST['change_password'])) {
     
-    // Stap 2: Controleer of de benodigde velden aanwezig zijn
+    // =====================================================
+    // STAP 1: INPUT VALIDATIE
+    // =====================================================
+    // Controleer of de benodigde velden aanwezig zijn
     if (isset($_POST['username']) && isset($_POST['password'])) {
         $username = $_POST['username'];
         $password = $_POST['password'];
         
-        echo "Username: " . htmlspecialchars($username) . "<br>";
-        echo "Password: " . htmlspecialchars($password) . "<br>";
-        
-        // Stap 3: Database controle implementeren
+        // =====================================================
+        // STAP 2: DATABASE AUTHENTICATIE
+        // =====================================================
+        // Database controle implementeren
         try {
             // Maak database connectie
             $pdo = new PDO($attr, $dbuser, $pass, $opts);
             
+            // =====================================================
+            // STAP 3: GEBRUIKER OPZOEKEN
+            // =====================================================
             // Zoek gebruiker in database met prepared statement (veilig tegen SQL-injectie)
             $stmt = $pdo->prepare("SELECT id, username, password, role FROM users WHERE username = ?");
             $stmt->execute([$username]);
             
+            // =====================================================
+            // STAP 4: GEBRUIKER VERIFICATIE
+            // =====================================================
             // Controleer of gebruiker bestaat
             if ($stmt->rowCount() > 0) {
                 $user_data = $stmt->fetch();
-                echo "Gebruiker gevonden in database!<br>";
-                echo "Database password: " . htmlspecialchars($user_data['password']) . "<br>";
-                echo "Ingevoerde password: " . htmlspecialchars($password) . "<br>";
                 
-                // Controleer wachtwoord (simpele vergelijking voor nu)
-                if ($password === $user_data['password']) {
-                    // Stap 4: Sessie management - sla gebruikersgegevens op
+                // =====================================================
+                // STAP 5: WACHTWOORD VERIFICATIE
+                // =====================================================
+                // Controleer wachtwoord met password_verify voor veilige hash verificatie
+                if (password_verify($password, $user_data['password'])) {
+                    
+                    // =====================================================
+                    // STAP 6: SESSIE INITIALISATIE
+                    // =====================================================
+                    // Sessie management - sla gebruikersgegevens op
                     $_SESSION['user_id'] = $user_data['id'];
                     $_SESSION['username'] = $user_data['username'];
                     $_SESSION['role'] = $user_data['role'];
                     $_SESSION['logged_in'] = true;
                     
-                    echo "<strong>Login succesvol!</strong><br>";
-                    echo "Welkom " . htmlspecialchars($user_data['username']) . "!<br>";
-                    echo "Je rol is: " . htmlspecialchars($user_data['role']) . "<br>";
-                    echo "Sessie gestart!<br>";
-                    
-                    // Redirect naar index.php (over 2 seconden)
-                    echo "<p>Je wordt doorgestuurd naar het dashboard...</p>";
-                    echo "<script>setTimeout(function(){ window.location.href = 'index.php'; }, 2000);</script>";
+                    // =====================================================
+                    // STAP 7: REDIRECT NAAR DASHBOARD
+                    // =====================================================
+                    // Direct redirect naar dashboard (geen wachttijd meer)
+                    header('Location: index.php');
+                    exit;
                     
                 } else {
+                    // Wachtwoord is incorrect
                     echo "<strong>Fout: Wachtwoord klopt niet!</strong><br>";
                 }
             } else {
+                // Gebruiker niet gevonden in database
                 echo "<strong>Fout: Gebruiker niet gevonden!</strong><br>";
             }
             
         } catch (PDOException $e) {
+            // Database connectie of query fout
             echo "Database fout: " . htmlspecialchars($e->getMessage()) . "<br>";
         }
         
     } else {
+        // Niet alle benodigde velden aanwezig
         echo "Fout: Username en/of password ontbreken<br>";
     }
 } else {
-    // Alleen redirect als dit bestand direct wordt aangeroepen
+    // =====================================================
+    // REDIRECT FUNCTIONALITEIT
+    // =====================================================
+    // Alleen redirect als dit bestand direct wordt aangeroepen (niet via include/require)
+    // Dit voorkomt ongewenste redirects wanneer login.php wordt geïncludeerd
     if (basename($_SERVER['PHP_SELF']) === 'login.php') {
         header('Location: index.php');
         exit;
