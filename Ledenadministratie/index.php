@@ -18,11 +18,25 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+
 // =====================================================
 // CONFIGURATIE EN AFHANKELIJKHEDEN
 // =====================================================
-// Importeer database connectie en setup
+// Importeer database connectie
 require_once 'connection.php';
+
+// =====================================================
+// DATABASE CONNECTIE EN INITIALISATIE
+// =====================================================
+// Maak database connectie en initialiseer $pdo
+$conn = new Connection();
+$pdo = $conn->checkAndCreateDatabase();
+
+if (!$pdo) {
+    logMessage("Database connectie mislukt!");
+    echo "Database connectie mislukt! Controleer de logs.";
+    exit;
+}
 
 // =====================================================
 // LOGOUT FUNCTIONALITEIT
@@ -48,13 +62,10 @@ function logMessage($message) {
 }
 
 
-
 // =====================================================
-// APPLICATIE INITIALISATIE
+// APPLICATIE LOGICA
 // =====================================================
-$conn = new Connection();
-$pdo = $conn->checkAndCreateDatabase();
-
+// $pdo is hierboven geïnitialiseerd
 if ($pdo) {   
     // =====================================================
     // GEBRUIKERS AUTHENTICATIE CONTROLE

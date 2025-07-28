@@ -17,13 +17,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// =====================================================
-// DATABASE CONFIGURATIE
-// =====================================================
-// Database verbinding parameters
 
-// Database connectie via Connection class
+// =====================================================
+// DATABASE CONNECTIE VIA Connection CLASS
+// =====================================================
 require_once 'connection.php';
+$conn = new Connection();
+$pdo = $conn->getConnection();
 
 // =====================================================
 // LOGIN FORM PROCESSING
@@ -47,8 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset(
         // Database controle implementeren
         try {
             // Maak database connectie via Connection class
-            $conn = new Connection();
-            $pdo = $conn->getConnection();
+            // ...existing code...
             
             // =====================================================
             // STAP 3: GEBRUIKER OPZOEKEN
