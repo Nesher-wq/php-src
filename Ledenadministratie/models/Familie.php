@@ -14,62 +14,28 @@ if (basename(__FILE__) == basename($_SERVER['SCRIPT_FILENAME'])) {
 
 
 class Familie {
-    private $id;
-    private $naam;
-    private $straat;
-    private $huisnummer;
-    private $postcode;
-    private $woonplaats;
-    private $familieleden = [];
-
-    public function getId() {
-        return $this->id;
-    }
-    public function setId($id) {
-        $this->id = $id;
-    }
-
-    public function getNaam() {
-        return $this->naam;
-    }
-    public function setNaam($naam) {
-        $this->naam = $naam;
-    }
-
-    public function getStraat() {
-        return $this->straat;
-    }
-    public function setStraat($straat) {
-        $this->straat = $straat;
-    }
-
-    public function getHuisnummer() {
-        return $this->huisnummer;
-    }
-    public function setHuisnummer($huisnummer) {
-        $this->huisnummer = $huisnummer;
-    }
-
-    public function getPostcode() {
-        return $this->postcode;
-    }
-    public function setPostcode($postcode) {
-        $this->postcode = $postcode;
-    }
-
-    public function getWoonplaats() {
-        return $this->woonplaats;
-    }
-    public function setWoonplaats($woonplaats) {
-        $this->woonplaats = $woonplaats;
-    }
+    public $id;
+    public $naam;
+    public $straat;
+    public $huisnummer;
+    public $postcode;
+    public $woonplaats;
+    public $familieleden = [];
 
     public function voegFamilielidToe(Familielid $lid) {
         $this->familieleden[] = $lid;
     }
 
-    public function getFamilieleden() {
-        return $this->familieleden;
+    public static function getAllFamilieleden(array $families): array {
+        $allFamilieleden = [];
+
+        foreach ($families as $familie) {
+            if ($familie instanceof self) {
+                $allFamilieleden = array_merge($allFamilieleden, $familie->familieleden);
+            }
+        }
+
+        return $allFamilieleden;
     }
 }
 ?>

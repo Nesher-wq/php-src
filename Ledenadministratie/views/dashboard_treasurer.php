@@ -1,6 +1,12 @@
 <?php
-// Dashboard voor treasurer
-?><!DOCTYPE html>
+// Dashboard voor penningmeester
+require_once __DIR__ . '/../models/Boekjaar.php';
+use models\Boekjaar;
+
+$boekjaarModel = new Boekjaar();
+$boekjaren = $boekjaarModel->getAllBoekjaren();
+?>
+<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
@@ -11,8 +17,10 @@
 <body>
     <nav class="navbar">
         <h1>Dashboard (Penningmeester)</h1>
-        <a href="index.php?action=change_password" style="margin-right:10px;">Change password</a>
-        <a href="?action=logout">Logout</a>
+        <div class="nav-right">
+            <a href="index.php?action=change_password" style="margin-right:10px;">Wachtwoord veranderen</a>
+            <a href="?action=logout">Uitloggen</a>
+        </div>
     </nav>
     <div class="container">
         <div class="welcome-section">
@@ -24,47 +32,26 @@
             </div>
         <?php endif; ?>
 
-        <div class="section">
-            <h3>Families</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Naam</th>
-                        <th>Straat</th>
-                        <th>Huisnummer</th>
-                        <th>Postcode</th>
-                        <th>Woonplaats</th>
-                        <th>Acties</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php
-                require_once __DIR__ . '/../controllers/FamilieController.php';
-                $familieController = new FamilieController($pdo);
-                foreach ($familieController->getAllFamilies() as $familie): ?>
-                    <tr>
-                        <td><?php echo $familie['id']; ?></td>
-                        <td><?php echo htmlspecialchars($familie['naam']); ?></td>
-                        <td><?php echo htmlspecialchars($familie['straat']); ?></td>
-                        <td><?php echo htmlspecialchars($familie['huisnummer']); ?></td>
-                        <td><?php echo htmlspecialchars($familie['postcode']); ?></td>
-                        <td><?php echo htmlspecialchars($familie['woonplaats']); ?></td>
-                        <td class="action-cell">
-                            <form method="POST" action="">
-                                <input type="hidden" name="edit_familie_id" value="<?php echo $familie['id']; ?>">
-                                <button type="submit" name="edit_familie" class="action-btn edit-btn">Bewerken</button>
-                            </form>
-                            <form method="POST" action="" onsubmit="return confirm('Weet u zeker dat u deze familie wilt verwijderen?');">
-                                <input type="hidden" name="delete_familie_id" value="<?php echo $familie['id']; ?>">
-                                <button type="submit" name="delete_familie" class="action-btn delete-btn">Verwijderen</button>
-                            </form>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
+        <!-- Boekjaar selectie en contributie berekening -->
+        <div class="contributie-section" style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+            <h3>Contributie Berekening</h3>
+            <form method="POST" action="handlers/contributie_handler.php" style="display: flex; align-items: center; gap: 10px;">
+                <input type="hidden" name="action" value="bereken_contributies">
+                <label for="boekjaar">Boekjaar:</label>
+                <select name="boekjaar" id="boekjaar" required>
+                    <option value="">Selecteer boekjaar...</option>
+                    <?php foreach ($boekjaren as $boekjaar): ?>
+                        <option value="<?php echo htmlspecialchars($boekjaar->jaar); ?>" 
+                                <?php echo (isset($_SESSION['geselecteerd_boekjaar']) && $_SESSION['geselecteerd_boekjaar'] == $boekjaar->jaar) ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($boekjaar->jaar); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="submit" class="btn btn-primary">Bereken</button>
+            </form>
         </div>
+
+        <?php include __DIR__ . '/treasurer/familielid_table.php'; ?>
     </div>
 </body>
 </html>
