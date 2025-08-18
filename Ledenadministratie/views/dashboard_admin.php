@@ -1,23 +1,28 @@
 <?php
-// Dashboard voor admin
-?><!DOCTYPE html>
-<html lang="nl">
+// views/dashboard_admin.php
+
+// Haal gebruikers op uit de database
+try {
+    $stmt = $pdo->prepare("SELECT id, username, role, description FROM users ORDER BY username");
+    $stmt->execute();
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    error_log("Error fetching users: " . $e->getMessage());
+    $users = []; // Zorg voor een lege array als er een fout optreedt
+}
+
+// Debug informatie (tijdelijk)
+error_log("Users fetched: " . print_r($users, true));
+
+// Get current user info to prevent self-deletion
+$currentUsername = $_SESSION['username'] ?? '';
+?>
+
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Admin</title>
+    <title>Admin Dashboard</title>
     <link rel="stylesheet" href="/Ledenadministratie/assets/style.css">
-    <style>
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .nav-right {
-            display: flex;
-            gap: 10px;
-        }
-    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -29,21 +34,11 @@
     </nav>
     <div class="container">
         <div class="welcome-section">
-            <h2>Hallo, <?php echo htmlspecialchars($_SESSION['username']); ?></h2>
+            <h2>Hallo, <?= htmlspecialchars($_SESSION['username'] ?? 'admin') ?></h2>
         </div>
-        <?php if (isset($message)): ?>
-            <div class="message <?php echo $message_type; ?>">
-                <?php echo htmlspecialchars($message); ?>
-            </div>
-        <?php endif; ?>
         
+        <!-- Include users table - CORRIGEER HET PAD HIER -->
         <?php include __DIR__ . '/admin/users_table.php'; ?>
-        
-        <?php if (isset($edit_user)): ?>
-            <?php include __DIR__ . '/admin/edit_user_form.php'; ?>
-        <?php else: ?>
-            <?php include __DIR__ . '/admin/create_user_form.php'; ?>
-        <?php endif; ?>
     </div>
 </body>
 </html>

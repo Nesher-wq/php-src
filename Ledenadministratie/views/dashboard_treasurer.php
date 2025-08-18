@@ -1,4 +1,9 @@
 <?php
+// Start de sessie als die nog niet is gestart
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Dashboard voor penningmeester
 require_once __DIR__ . '/../models/Boekjaar.php';
 use models\Boekjaar;
@@ -33,9 +38,10 @@ $boekjaren = $boekjaarModel->getAllBoekjaren();
         <?php endif; ?>
 
         <!-- Boekjaar selectie en contributie berekening -->
-        <div class="contributie-section" style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+        <div class="contributie-section">
             <h3>Contributie Berekening</h3>
-            <form method="POST" action="handlers/contributie_handler.php" style="display: flex; align-items: center; gap: 10px;">
+            <form method="POST" class="contributie-form">
+                <input type="hidden" name="handler" value="contributie">
                 <input type="hidden" name="action" value="bereken_contributies">
                 <label for="boekjaar">Boekjaar:</label>
                 <select name="boekjaar" id="boekjaar" required>

@@ -18,19 +18,25 @@ class Contributie {
             $this->boekjaar = $boekjaar;
             $this->contributie_type = $contributie_type;
             
+            // Haal boekjaar gegevens op voor prijzen
+            require_once __DIR__ . '/Boekjaar.php';
+            $boekjaarModel = new Boekjaar();
+            $boekjaarData = $boekjaarModel->getBoekjaarByJaar($boekjaar);
+            
             if ($contributie_type === 'stalling' && $stalling_aantal !== null) {
-                // Voor stalling contributie
-                $this->bedrag = $stalling_aantal * 50;
+                // Voor stalling contributie - gebruik stallingskosten uit boekjaar
+                $stallingskosten = $boekjaarData ? $boekjaarData->stallingskosten : 50.00;
+                $this->bedrag = $stalling_aantal * $stallingskosten;
                 $this->soort_lid = 'Stalling';
                 $this->leeftijd = 0; // Niet relevant voor stalling
             } else {
                 // Voor lidmaatschap contributie
-                $this->initializeLidmaatschap();
+                $this->initializeLidmaatschap($boekjaarData);
             }
         }
     }
     
-    private function initializeLidmaatschap() {
+    private function initializeLidmaatschap($boekjaarData = null) {
         // Haal geboortedatum op van het familielid
         require_once __DIR__ . '/../controllers/SoortlidController.php';
         require_once __DIR__ . '/../config/connection.php';
@@ -57,8 +63,9 @@ class Contributie {
             // Bereken en stel leeftijd in
             $this->setLeeftijd();
             
-            // Stel basis bedrag in (dit zou uit een configuratie moeten komen)
-            $this->bedrag = 100; // Basis contributie bedrag
+            // Stel basis bedrag in - gebruik basiscontributie uit boekjaar
+            $basiscontributie = $boekjaarData ? $boekjaarData->basiscontributie : 100.00;
+            $this->bedrag = $basiscontributie;
         }
     }
 

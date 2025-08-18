@@ -31,18 +31,24 @@ CREATE TABLE IF NOT EXISTS familielid (
     FOREIGN KEY (familie_id) REFERENCES familie(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS users (
-    id int NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+    id INT NOT NULL AUTO_INCREMENT,
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL,
     description VARCHAR(255),
+    first_login BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS boekjaar (
+-- Hermaak boekjaar tabel met nieuwe structuur
+DROP TABLE IF EXISTS boekjaar;
+CREATE TABLE boekjaar (
     id INT NOT NULL AUTO_INCREMENT,
     jaar INT NOT NULL UNIQUE,
+    basiscontributie DECIMAL(10,2) NOT NULL DEFAULT 100.00,
+    stallingskosten DECIMAL(10,2) NOT NULL DEFAULT 50.00,
     PRIMARY KEY (id)
 );
 
@@ -59,23 +65,25 @@ ON DUPLICATE KEY UPDATE
     minimum_leeftijd = VALUES(minimum_leeftijd),
     maximum_leeftijd = VALUES(maximum_leeftijd);
 
--- Voeg standaard admin-gebruiker toe (wachtwoord: password123, hash hieronder gegenereerd)
-INSERT INTO users (username, password, role, description)
-SELECT * FROM (SELECT
-    'admin' AS username,
-    '$2y$10$wH6QwQwQwQwQwQwQwQwQwQwQwQwQwQwQwQwQwQwQwQwQwQwQwQwQwQwQwQwQwQwQw' AS password,
-    'admin' AS role,
-    'hoofdadmin' AS description
-) AS tmp
-WHERE NOT EXISTS (
-    SELECT 1 FROM users WHERE username = 'admin'
-);
+-- Voeg standaard gebruikers toe met plain text wachtwoorden voor eerste login
+INSERT INTO users (username, password, role, description, first_login)
+VALUES 
+('admin', 'password123', 'admin', 'hoofdadmin', TRUE),
+('kees_penningmeester', 'kees123', 'treasurer', 'Penningmeester', TRUE),
+('jan_secretaris', 'jan123', 'secretary', 'Secretaris', TRUE)
+ON DUPLICATE KEY UPDATE 
+    password = VALUES(password),
+    first_login = VALUES(first_login);
 
--- Voeg het huidige jaar en vorige jaar toe aan boekjaar tabel
-INSERT INTO boekjaar (jaar) 
-SELECT YEAR(CURDATE()) AS jaar
-WHERE NOT EXISTS (SELECT 1 FROM boekjaar WHERE jaar = YEAR(CURDATE()));
+-- Voeg het huidige jaar en vorige jaar toe aan boekjaar tabel met specifieke tarieven
+INSERT INTO boekjaar (jaar, basiscontributie, stallingskosten) 
+VALUES (2025, 100.00, 50.00)
+ON DUPLICATE KEY UPDATE 
+    basiscontributie = VALUES(basiscontributie),
+    stallingskosten = VALUES(stallingskosten);
 
-INSERT INTO boekjaar (jaar) 
-SELECT YEAR(CURDATE()) - 1 AS jaar
-WHERE NOT EXISTS (SELECT 1 FROM boekjaar WHERE jaar = YEAR(CURDATE()) - 1);
+INSERT INTO boekjaar (jaar, basiscontributie, stallingskosten) 
+VALUES (2024, 90.00, 50.00)
+ON DUPLICATE KEY UPDATE 
+    basiscontributie = VALUES(basiscontributie),
+    stallingskosten = VALUES(stallingskosten);

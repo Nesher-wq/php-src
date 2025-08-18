@@ -12,10 +12,14 @@ if (basename(__FILE__) == basename($_SERVER['SCRIPT_FILENAME'])) {
 class Boekjaar {
     public $id;
     public $jaar;
+    public $basiscontributie;
+    public $stallingskosten;
 
-    public function __construct($id = null, $jaar = null) {
+    public function __construct($id = null, $jaar = null, $basiscontributie = null, $stallingskosten = null) {
         $this->id = $id;
         $this->jaar = $jaar;
+        $this->basiscontributie = $basiscontributie;
+        $this->stallingskosten = $stallingskosten;
     }
 
     // Haal alle boekjaren op
@@ -32,6 +36,8 @@ class Boekjaar {
             $boekjaar = new Boekjaar();
             $boekjaar->id = $row['id'];
             $boekjaar->jaar = $row['jaar'];
+            $boekjaar->basiscontributie = $row['basiscontributie'] ?? 100.00;
+            $boekjaar->stallingskosten = $row['stallingskosten'] ?? 50.00;
             $boekjaren[] = $boekjaar;
         }
 
@@ -72,6 +78,8 @@ class Boekjaar {
             $boekjaar = new Boekjaar();
             $boekjaar->id = $result['id'];
             $boekjaar->jaar = $result['jaar'];
+            $boekjaar->basiscontributie = $result['basiscontributie'] ?? 100.00;
+            $boekjaar->stallingskosten = $result['stallingskosten'] ?? 50.00;
             return $boekjaar;
         }
 

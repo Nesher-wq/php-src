@@ -20,6 +20,12 @@ $familieleden = $familielidController->getAllFamilieleden();
 $berekende_contributies = $_SESSION['berekende_contributies'] ?? [];
 $geselecteerd_boekjaar = $_SESSION['geselecteerd_boekjaar'] ?? null;
 
+// Debug log
+error_log('Familielid table - Session data:');
+error_log('Geselecteerd boekjaar: ' . ($geselecteerd_boekjaar ?? 'niet gezet'));
+error_log('Aantal berekende contributies: ' . count($berekende_contributies));
+error_log('Session ID: ' . session_id());
+
 // Organiseer contributies per familielid
 $contributies_per_lid = [];
 foreach ($berekende_contributies as $contributie) {
@@ -30,6 +36,18 @@ foreach ($berekende_contributies as $contributie) {
 <h3>Familieleden Overzicht</h3>
 <?php if ($geselecteerd_boekjaar): ?>
     <p><strong>Contributies voor boekjaar: <?php echo htmlspecialchars($geselecteerd_boekjaar); ?></strong></p>
+<?php endif; ?>
+
+<?php if (isset($_GET['debug'])): ?>
+    <div style="background-color: #f8f9fa; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd;">
+        <h4>Debug Informatie</h4>
+        <pre><?php 
+            echo "Sessie ID: " . session_id() . "\n";
+            echo "Berekende contributies: " . print_r($berekende_contributies, true) . "\n";
+            echo "Geselecteerd boekjaar: " . ($geselecteerd_boekjaar ?? 'niet gezet') . "\n";
+            echo "Contributies per lid: " . print_r($contributies_per_lid, true);
+        ?></pre>
+    </div>
 <?php endif; ?>
 
 <table>
