@@ -1,3 +1,4 @@
+CREATE DATABASE IF NOT EXISTS `ledenadministratie`;
 USE `ledenadministratie`;
 
 CREATE TABLE IF NOT EXISTS familie (
