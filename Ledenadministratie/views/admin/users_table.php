@@ -1,6 +1,12 @@
 <div class="section">
     <h3>Gebruikers</h3>
     
+    <?php if (isset($message)): ?>
+        <div class="message <?php echo $message_type; ?>">
+            <?php echo htmlspecialchars($message); ?>
+        </div>
+    <?php endif; ?>
+    
     <!-- Add User Form -->
     <form method="POST" class="form-inline">
         <input type="hidden" name="action" value="add_user">
@@ -43,18 +49,19 @@
                     <form method="POST" style="display: inline;">
                         <input type="hidden" name="action" value="edit_user">
                         <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['id'] ?? '') ?>">
-                        <input type="text" name="username" value="<?= htmlspecialchars($user['username'] ?? '') ?>" required>
-                        <select name="role" required>
+                        <input type="text" name="username" value="<?= htmlspecialchars($user['username'] ?? '') ?>" required style="width: 100px;">
+                        <input type="password" name="password" placeholder="Nieuw wachtwoord" style="width: 100px;">
+                        <select name="role" required style="width: 100px;">
                             <option value="admin" <?= ($user['role'] ?? '') === 'admin' ? 'selected' : '' ?>>Admin</option>
                             <option value="secretary" <?= ($user['role'] ?? '') === 'secretary' ? 'selected' : '' ?>>Secretaris</option>
                             <option value="treasurer" <?= ($user['role'] ?? '') === 'treasurer' ? 'selected' : '' ?>>Penningmeester</option>
                         </select>
-                        <input type="text" name="description" value="<?= htmlspecialchars($user['description'] ?? '') ?>">
+                        <input type="text" name="description" value="<?= htmlspecialchars($user['description'] ?? '') ?>" style="width: 100px;">
                         <button type="submit">Bijwerken</button>
                     </form>
                     
-                    <!-- Delete Form - Hidden for admin's own account -->
-                    <?php if ($user['username'] !== $currentUsername): ?>
+                    <!-- Delete Form - Hidden for admin's own account and main admin -->
+                    <?php if ($user['username'] !== $currentUsername && $user['username'] !== 'admin'): ?>
                     <form method="POST" style="display: inline;" onsubmit="return confirm('Weet je zeker dat je deze gebruiker wilt verwijderen?')">
                         <input type="hidden" name="action" value="delete_user">
                         <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['id'] ?? '') ?>">

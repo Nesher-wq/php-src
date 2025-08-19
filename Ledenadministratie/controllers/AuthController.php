@@ -44,10 +44,11 @@ class AuthController {
                     
                     // Set session variables
                     $_SESSION['loggedin'] = true;
+                    $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['role'] = $user['role'];
                     
-                    error_log("AuthController: Session variables set - loggedin: " . $_SESSION['loggedin'] . ", role: " . $_SESSION['role']);
+                    error_log("AuthController: Session variables set - loggedin: " . $_SESSION['loggedin'] . ", user_id: " . $_SESSION['user_id'] . ", role: " . $_SESSION['role']);
                     return true;
                 } else {
                     error_log("AuthController: Plain text password mismatch");
@@ -62,6 +63,7 @@ class AuthController {
                     error_log("AuthController: Hashed password verified successfully");
                     
                     $_SESSION['loggedin'] = true;
+                    $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['role'] = $user['role'];
                     
