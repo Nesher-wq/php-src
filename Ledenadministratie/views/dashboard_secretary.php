@@ -1,4 +1,9 @@
 <?php
+if (!defined('INCLUDED_FROM_INDEX')) {
+    http_response_code(403);
+    exit('Direct access not allowed.');
+}
+
 // Dashboard voor secretaris
 ?><!DOCTYPE html>
 <html lang="nl">

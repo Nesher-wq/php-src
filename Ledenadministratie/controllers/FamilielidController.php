@@ -16,9 +16,21 @@ class FamilielidController {
     }
 
     public function getFamilielidById($id) {
-        $stmt = $this->pdo->prepare("SELECT * FROM familielid WHERE id = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM familielid WHERE id = ?");
+            $stmt->execute([$id]);
+            $familielid = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$familielid) {
+                writeLog("No familielid found with ID: " . $id);
+                return null;
+            }
+            
+            return $familielid;
+        } catch (PDOException $e) {
+            writeLog("Error fetching familielid: " . $e->getMessage());
+            return null;
+        }
     }
 
     public function createFamilielid($familie_id, $naam, $geboortedatum, $soort_familielid, $stalling = 0, $soort_lid_id = null) {

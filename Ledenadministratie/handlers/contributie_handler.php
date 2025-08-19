@@ -22,6 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         return;
     }
     
+    // Clear previous session data before new calculation
+    unset($_SESSION['berekende_contributies']);
+    unset($_SESSION['geselecteerd_boekjaar']);
+    
     // Voer berekening uit
     $result = $contributieController->berekenContributies($boekjaar);
     

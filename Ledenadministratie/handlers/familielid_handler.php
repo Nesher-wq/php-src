@@ -1,4 +1,9 @@
 <?php
+if (!defined('INCLUDED_FROM_INDEX')) {
+    http_response_code(403);
+    exit('Direct access not allowed.');
+}
+
 require_once __DIR__ . '/../includes/utils.php';
 writeLog('Familielid handler started - Method: ' . $_SERVER['REQUEST_METHOD']);
 writeLog('POST data: ' . print_r($_POST, true));
@@ -39,11 +44,21 @@ if (isset($_POST['add_familielid'])) {
 
 // Familielid bewerken formulier tonen
 if (isset($_POST['edit_familielid'])) {
-    $edit_familielid_id = $_POST['edit_familielid_id'];
-    $familie_id = $_POST['edit_familie_id'];
+    writeLog('Attempting to edit familielid');
     
-    $edit_familielid = $familielidController->getFamilielidById($edit_familielid_id);
-    $edit_familie = $familieController->getFamilieById($familie_id);
+    $edit_familielid_id = $_POST['edit_familielid_id'] ?? null;
+    $familie_id = $_POST['edit_familie_id'] ?? null;
+    
+    if ($edit_familielid_id && $familie_id) {
+        $edit_familielid = $familielidController->getFamilielidById($edit_familielid_id);
+        $edit_familie = $familieController->getFamilieById($familie_id);
+        
+        if (!$edit_familielid || !$edit_familie) {
+            $message = "Fout bij het ophalen van familielid gegevens.";
+            $message_type = "error";
+            writeLog("Failed to retrieve familielid or familie data");
+        }
+    }
 }
 
 // Familielid bijwerken

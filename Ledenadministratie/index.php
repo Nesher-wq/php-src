@@ -5,16 +5,12 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Debug logging
-error_log('Index.php loaded - Request Method: ' . $_SERVER['REQUEST_METHOD']);
-error_log('Index.php loaded - POST Data: ' . print_r($_POST, true));
-error_log('Index.php loaded - Session Data: ' . print_r($_SESSION, true));
-
 // Initialize dependencies
 require_once __DIR__ . '/config/connection.php';
 require_once __DIR__ . '/controllers/UserController.php';
 require_once __DIR__ . '/controllers/AuthController.php';
-require_once __DIR__ . '/models/Contributie.php';
+require_once __DIR__ . '/controllers/FamilieController.php';
+require_once __DIR__ . '/controllers/FamilielidController.php';
 require_once __DIR__ . '/models/Soortlid.php';
 
 use config\Connection;
@@ -23,6 +19,7 @@ $conn = new Connection();
 $pdo = $conn->getConnection();
 $userController = new UserController($pdo);
 $authController = new AuthController($pdo);
+$familieController = new FamilieController($pdo);
 
 // Load soort leden for dropdown usage
 $soortlidModel = new \models\Soortlid();
@@ -45,6 +42,32 @@ if (!$isLoggedIn) {
 }
 
 error_log('Index.php - User is logged in, proceeding to dashboard');
+
+// Add these checks before accessing array values
+if (isset($_POST['action']) && $_POST['action'] === 'edit_familielid') {
+    $edit_familielid_id = $_POST['edit_familielid_id'] ?? null;
+    $edit_familie_id = $_POST['edit_familie_id'] ?? null;
+    
+    if ($edit_familielid_id && $edit_familie_id) {
+        $familielidController = new FamilielidController($pdo);
+        $edit_familielid = $familielidController->getFamilielidById($edit_familielid_id);
+        
+        if ($edit_familielid) {
+            $edit_familie = $familieController->getFamilieById($edit_familie_id);
+            if (!$edit_familie) {
+                $edit_familielid = null;
+                $message = "Fout: Familie niet gevonden.";
+                $message_type = "error";
+            }
+        } else {
+            $message = "Fout: Familielid niet gevonden.";
+            $message_type = "error";
+        }
+    } else {
+        $message = "Fout: Ongeldige parameters voor bewerken familielid.";
+        $message_type = "error";
+    }
+}
 
 // At this point user is logged in; include handlers as needed (role-checked)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -74,7 +97,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         if (in_array($_POST['action'], $familyActions, true)) {
             if (in_array($userRole, ['secretary','admin'], true)) {
-                include __DIR__ . '/handlers/family_handler.php';
+                $result = $familieController->handleRequest();
+                if (is_array($result)) {
+                    // First set the edit_familie if available
+                    if ($result['success'] && isset($result['familie'])) {
+                        $edit_familie = $result['familie'];
+                    }
+                    // Only set message if explicitly provided
+                    if (isset($result['message'])) {
+                        $message = $result['message'];
+                        $message_type = $result['success'] ? 'success' : 'error';
+                    }
+                }
             }
         } elseif (in_array($_POST['action'], $familielidActions, true)) {
             if (in_array($userRole, ['secretary','admin'], true)) {

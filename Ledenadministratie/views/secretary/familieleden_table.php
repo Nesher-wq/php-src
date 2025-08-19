@@ -10,7 +10,7 @@
         </tr>
     </thead>
     <tbody>
-        <?php if (isset($edit_familie['familieleden']) && is_array($edit_familie['familieleden'])): ?>
+        <?php if (isset($edit_familie) && is_array($edit_familie) && isset($edit_familie['familieleden']) && is_array($edit_familie['familieleden'])): ?>
             <?php foreach ($edit_familie['familieleden'] as $familielid): ?>
                 <tr>
                     <td><?= htmlspecialchars($familielid['naam']) ?></td>

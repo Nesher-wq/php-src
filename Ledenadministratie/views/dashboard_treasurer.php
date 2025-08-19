@@ -1,4 +1,9 @@
 <?php
+if (!defined('INCLUDED_FROM_INDEX')) {
+    http_response_code(403);
+    exit('Direct access not allowed.');
+}
+
 // Start de sessie als die nog niet is gestart
 if (session_status() == PHP_SESSION_NONE) {
     session_start();

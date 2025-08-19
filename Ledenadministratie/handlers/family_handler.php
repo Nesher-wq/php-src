@@ -1,4 +1,9 @@
 <?php
+if (!defined('INCLUDED_FROM_INDEX')) {
+    http_response_code(403);
+    exit('Direct access not allowed.');
+}
+
 require_once __DIR__ . '/../includes/utils.php';
 writeLog('Family handler started - Method: ' . $_SERVER['REQUEST_METHOD']);
 writeLog('POST data: ' . print_r($_POST, true));

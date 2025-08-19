@@ -53,6 +53,22 @@ CREATE TABLE boekjaar (
     PRIMARY KEY (id)
 );
 
+-- Tabel voor berekende contributies
+DROP TABLE IF EXISTS contributie;
+CREATE TABLE contributie (
+    id INT NOT NULL AUTO_INCREMENT,
+    familielid_id INT NOT NULL,
+    boekjaar INT NOT NULL,
+    bedrag DECIMAL(10,2) NOT NULL,
+    stalling_aantal INT DEFAULT 0,
+    basis_bedrag DECIMAL(10,2) DEFAULT 0.00,
+    stalling_bedrag DECIMAL(10,2) DEFAULT 0.00,
+    aangemaakt_op TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (familielid_id) REFERENCES familielid(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_familielid_boekjaar (familielid_id, boekjaar, stalling_aantal)
+);
+
 -- Voeg standaard soorten leden toe met leeftijdsbereiken
 INSERT INTO soortlid (omschrijving, minimum_leeftijd, maximum_leeftijd)
 VALUES

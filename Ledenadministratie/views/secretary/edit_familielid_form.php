@@ -1,3 +1,10 @@
+<?php
+if (!defined('INCLUDED_FROM_INDEX')) {
+    http_response_code(403);
+    exit('Direct access not allowed.');
+}
+?>
+
 <h4>Familielid bewerken</h4>
 <form method="POST" action="/Ledenadministratie/index.php" class="form">
     <input type="hidden" name="action" value="edit_familielid">

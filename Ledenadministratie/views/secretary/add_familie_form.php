@@ -1,4 +1,8 @@
-<?php 
+<?php
+if (!defined('INCLUDED_FROM_INDEX')) {
+    http_response_code(403);
+    exit('Direct access not allowed.');
+}
 require_once __DIR__ . '/../../includes/utils.php';
 writeLog('Rendering add_familie_form.php'); 
 ?>

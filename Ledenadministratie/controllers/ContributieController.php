@@ -11,39 +11,32 @@ class ContributieController {
         require_once __DIR__ . '/../models/Contributie.php';
         
         try {
-            // Haal alle familieleden op
-            $stmt = $this->pdo->prepare("SELECT id, stalling FROM familielid");
-            $stmt->execute();
-            $familieleden = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            $contributies = [];
-            
-            // Genereer contributies voor elk familielid
-            foreach ($familieleden as $familielid) {
-                $familielid_contributies = \models\Contributie::createContributies(
-                    $familielid['id'], 
-                    $boekjaar, 
-                    $familielid['stalling']
-                );
-                
-                foreach ($familielid_contributies as $contributie) {
-                    $contributies[] = [
-                        'familielid_id' => $contributie->familielid_id,
-                        'boekjaar' => $contributie->boekjaar,
-                        'contributie_type' => $contributie->contributie_type,
-                        'soort_lid' => $contributie->soort_lid,
-                        'leeftijd' => $contributie->leeftijd,
-                        'bedrag' => $contributie->getBedrag()
-                    ];
-                }
+            // Start session if not already started
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
             }
             
-            return [
-                'success' => true,
-                'contributies' => $contributies,
-                'message' => 'Contributies succesvol berekend voor boekjaar ' . $boekjaar . 
-                           ' (' . count($contributies) . ' contributies berekend)'
-            ];
+            // Set PDO connection in Contributie model
+            \models\Contributie::setPDO($this->pdo);
+            
+            // Calculate contributions
+            $success = \models\Contributie::createContributies($boekjaar);
+            
+            if ($success) {
+                // Get the calculated contributions from session (set by the model)
+                $contributies = $_SESSION['berekende_contributies'] ?? [];
+                
+                return [
+                    'success' => true,
+                    'message' => 'Contributies succesvol berekend voor boekjaar ' . $boekjaar,
+                    'contributies' => $contributies
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'error' => 'Er is een fout opgetreden bij het berekenen van de contributies'
+                ];
+            }
             
         } catch (Exception $e) {
             return [
