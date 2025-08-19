@@ -1,7 +1,10 @@
 <?php
-// handlers/family_handler.php - Familie management voor secretary role
+require_once __DIR__ . '/../includes/utils.php';
+writeLog('Family handler started - Method: ' . $_SERVER['REQUEST_METHOD']);
+writeLog('POST data: ' . print_r($_POST, true));
 
-if ($_SESSION['role'] !== 'secretary' || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    writeLog('Invalid request method, returning');
     return;
 }
 
@@ -13,6 +16,9 @@ $familielidController = new FamilielidController($pdo);
 
 // Nieuwe familie toevoegen
 if (isset($_POST['add_familie'])) {
+    writeLog('Attempting to add new family');
+    writeLog('Familie naam: ' . $_POST['familie_naam']);
+    
     $result = $familieController->createFamilie(
         $_POST['familie_naam'],
         $_POST['familie_straat'],
@@ -20,6 +26,8 @@ if (isset($_POST['add_familie'])) {
         $_POST['familie_postcode'],
         $_POST['familie_woonplaats']
     );
+    
+    writeLog('Create family result: ' . ($result ? 'SUCCESS' : 'FAILED'));
     
     $message = $result ? "Familie succesvol toegevoegd." : "Fout bij het toevoegen van de familie.";
     $message_type = $result ? "success" : "error";
@@ -48,7 +56,12 @@ if (isset($_POST['update_familie'])) {
 
 // Familie verwijderen
 if (isset($_POST['delete_familie'])) {
+    writeLog('Attempting to delete family with ID: ' . $_POST['delete_familie_id']);
+    
     $result = $familieController->deleteFamilie($_POST['delete_familie_id']);
+    
+    writeLog('Delete family result: ' . ($result ? 'SUCCESS' : 'FAILED'));
+    
     $message = $result ? "Familie succesvol verwijderd." : "Fout bij het verwijderen van de familie.";
     $message_type = $result ? "success" : "error";
 }
@@ -60,6 +73,9 @@ if (isset($_POST['cancel_edit'])) {
 
 // Familielid toevoegen
 if (isset($_POST['add_familielid'])) {
+    writeLog('Attempting to add new family member');
+    writeLog('POST data for family member: ' . print_r($_POST, true));
+    
     $familie_id = $_POST['familie_id'];
     $result = $familielidController->createFamilielid(
         $familie_id,
@@ -68,6 +84,8 @@ if (isset($_POST['add_familielid'])) {
         $_POST['soort_familielid'] ?? '',
         $_POST['stalling'] ?? 0
     );
+    
+    writeLog('Create family member result: ' . ($result ? 'SUCCESS' : 'FAILED'));
     
     $message = $result ? "Familielid succesvol toegevoegd." : "Fout bij het toevoegen van het familielid.";
     $message_type = $result ? "success" : "error";
@@ -87,6 +105,9 @@ if (isset($_POST['edit_familielid'])) {
 
 // Familielid bijwerken
 if (isset($_POST['update_familielid'])) {
+    writeLog('Attempting to update family member');
+    writeLog('POST data for family member update: ' . print_r($_POST, true));
+    
     $familie_id = $_POST['familie_id'];
     $result = $familielidController->updateFamilielid(
         $_POST['familielid_id'],
@@ -95,6 +116,8 @@ if (isset($_POST['update_familielid'])) {
         $_POST['soort_familielid'] ?? '',
         $_POST['stalling'] ?? 0
     );
+    
+    writeLog('Update family member result: ' . ($result ? 'SUCCESS' : 'FAILED'));
     
     $message = $result ? "Familielid succesvol bijgewerkt." : "Fout bij het bijwerken van het familielid.";
     $message_type = $result ? "success" : "error";

@@ -1,5 +1,6 @@
 <h4>Familie bewerken</h4>
-<form method="POST" action="" class="form">
+<form method="POST" action="/Ledenadministratie/index.php" class="form">
+    <input type="hidden" name="action" value="edit_family">
     <input type="hidden" name="familie_id" value="<?php echo $edit_familie['id']; ?>">
     <div class="form-group">
         <label for="familie_naam">Naam:</label>

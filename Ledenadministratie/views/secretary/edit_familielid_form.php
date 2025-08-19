@@ -1,5 +1,6 @@
 <h4>Familielid bewerken</h4>
-<form method="POST" action="" class="form">
+<form method="POST" action="/Ledenadministratie/index.php" class="form">
+    <input type="hidden" name="action" value="edit_familielid">
     <input type="hidden" name="familielid_id" value="<?php echo $edit_familielid['id']; ?>">
     <input type="hidden" name="familie_id" value="<?php echo $edit_familie['id']; ?>">
     <div class="form-group">

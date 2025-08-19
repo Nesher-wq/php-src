@@ -27,3 +27,406 @@
 [2025-07-29 14:09:02] Standaard admin gebruiker 'admin' aangemaakt met het standaard wachtwoord en description 'secretaris'. Pas deze aan na eerste login!
 [2025-07-29 14:10:26] Database 'ledenadministratie' bestaat al.
 [2025-07-29 14:10:26] Tabel 'users' bestaat al.
+[2025-08-18 13:48:15] Rendering add_familie_form.php
+[2025-08-18 13:48:38] Family handler started - Method: POST
+[2025-08-18 13:48:38] POST data: Array
+(
+    [action] => add_family
+    [familie_naam] => Derksen
+    [familie_straat] => Kerkstraat
+    [familie_huisnummer] => 1
+    [familie_postcode] => 3498 AL
+    [familie_woonplaats] => Dorpje
+    [add_familie] => 
+)
+
+[2025-08-18 13:48:38] Attempting to add new family
+[2025-08-18 13:48:38] Familie naam: Derksen
+[2025-08-18 13:48:38] Create family result: SUCCESS
+[2025-08-18 13:49:30] Family handler started - Method: POST
+[2025-08-18 13:49:30] POST data: Array
+(
+    [action] => add_family
+    [familie_naam] => Derksen
+    [familie_straat] => Kerkstraat
+    [familie_huisnummer] => 1
+    [familie_postcode] => 3498 AL
+    [familie_woonplaats] => Dorpje
+    [add_familie] => 
+)
+
+[2025-08-18 13:49:30] Attempting to add new family
+[2025-08-18 13:49:30] Familie naam: Derksen
+[2025-08-18 13:49:30] FamilieController: Creating family with name: Derksen
+[2025-08-18 13:49:30] FamilieController: Executing SQL: INSERT INTO familie (naam, straat, huisnummer, postcode, woonplaats) VALUES (?, ?, ?, ?, ?)
+[2025-08-18 13:49:30] FamilieController: SQL execution result: SUCCESS
+[2025-08-18 13:49:30] Create family result: SUCCESS
+[2025-08-18 13:49:33] Rendering add_familie_form.php
+[2025-08-18 13:49:36] Rendering add_familie_form.php
+[2025-08-18 13:49:39] Rendering add_familie_form.php
+[2025-08-18 13:51:50] Family handler started - Method: POST
+[2025-08-18 13:51:50] POST data: Array
+(
+    [action] => delete_family
+    [delete_familie_id] => 2
+    [delete_familie] => 
+)
+
+[2025-08-18 13:51:50] Attempting to delete family with ID: 2
+[2025-08-18 13:51:50] FamilieController: Deleting family with ID: 2
+[2025-08-18 13:51:50] FamilieController: Delete result: SUCCESS
+[2025-08-18 13:51:50] Delete family result: SUCCESS
+[2025-08-18 13:52:52] Rendering add_familie_form.php
+[2025-08-18 13:53:01] Rendering add_familie_form.php
+[2025-08-18 13:53:12] Rendering add_familie_form.php
+[2025-08-18 13:54:27] Rendering add_familie_form.php
+[2025-08-18 14:27:57] Rendering add_familie_form.php
+[2025-08-18 14:28:14] Family handler started - Method: POST
+[2025-08-18 14:28:14] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-18 14:29:03] Rendering add_familie_form.php
+[2025-08-18 14:29:12] Family handler started - Method: POST
+[2025-08-18 14:29:12] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-18 14:31:37] Rendering add_familie_form.php
+[2025-08-18 14:31:50] Family handler started - Method: POST
+[2025-08-18 14:31:50] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-18 14:32:13] Family handler started - Method: POST
+[2025-08-18 14:32:13] POST data: Array
+(
+    [action] => add_familielid
+    [familie_id] => 1
+    [familielid_naam] => Linda
+    [familielid_geboortedatum] => 2003-08-14
+    [soort_familielid] => dochter
+    [stalling] => 1
+    [add_familielid] => 
+)
+
+[2025-08-18 14:32:13] Attempting to add new family member
+[2025-08-18 14:32:13] POST data for family member: Array
+(
+    [action] => add_familielid
+    [familie_id] => 1
+    [familielid_naam] => Linda
+    [familielid_geboortedatum] => 2003-08-14
+    [soort_familielid] => dochter
+    [stalling] => 1
+    [add_familielid] => 
+)
+
+[2025-08-18 14:32:13] Create family member result: SUCCESS
+[2025-08-18 14:32:28] Rendering add_familie_form.php
+[2025-08-18 14:41:22] Loaded families count: 1
+[2025-08-18 14:41:22] Rendering add_familie_form.php
+[2025-08-18 14:41:39] Loaded families count: 1
+[2025-08-18 14:41:39] Rendering add_familie_form.php
+[2025-08-19 08:02:57] Loaded families count: 1
+[2025-08-19 08:02:57] Rendering add_familie_form.php
+[2025-08-19 08:03:01] Family handler started - Method: POST
+[2025-08-19 08:03:01] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-19 08:03:01] Loaded families count: 1
+[2025-08-19 08:03:06] Loaded families count: 1
+[2025-08-19 08:03:06] Rendering add_familie_form.php
+[2025-08-19 08:03:14] Loaded families count: 1
+[2025-08-19 08:03:14] Rendering add_familie_form.php
+[2025-08-19 08:04:37] Loaded families count: 1
+[2025-08-19 08:04:37] Rendering add_familie_form.php
+[2025-08-19 08:04:41] Family handler started - Method: POST
+[2025-08-19 08:04:41] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-19 08:04:41] Loaded families count: 1
+[2025-08-19 08:04:46] Family handler started - Method: POST
+[2025-08-19 08:04:46] POST data: Array
+(
+    [action] => edit_family
+    [familie_id] => 1
+    [familie_naam] => Derkssen
+    [familie_straat] => Kerkstraat
+    [familie_huisnummer] => 1
+    [familie_postcode] => 3498 AL
+    [familie_woonplaats] => Dorpje
+    [update_familie] => 
+)
+
+[2025-08-19 08:04:46] Loaded families count: 1
+[2025-08-19 08:04:46] Rendering add_familie_form.php
+[2025-08-19 08:04:54] Family handler started - Method: POST
+[2025-08-19 08:04:54] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-19 08:04:54] Loaded families count: 1
+[2025-08-19 08:04:56] Family handler started - Method: POST
+[2025-08-19 08:04:56] POST data: Array
+(
+    [action] => edit_family
+    [familie_id] => 1
+    [familie_naam] => Derkssen
+    [familie_straat] => Kerkstraat
+    [familie_huisnummer] => 1
+    [familie_postcode] => 3498 AL
+    [familie_woonplaats] => Dorpje
+    [cancel_edit] => 
+)
+
+[2025-08-19 08:04:56] Loaded families count: 1
+[2025-08-19 08:04:56] Rendering add_familie_form.php
+[2025-08-19 08:04:58] Family handler started - Method: POST
+[2025-08-19 08:04:58] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-19 08:04:58] Loaded families count: 1
+[2025-08-19 08:05:04] Loaded families count: 1
+[2025-08-19 08:05:04] Rendering add_familie_form.php
+[2025-08-19 08:05:11] Family handler started - Method: POST
+[2025-08-19 08:05:11] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-19 08:05:11] Loaded families count: 1
+[2025-08-19 08:05:23] Loaded families count: 1
+[2025-08-19 08:05:23] Rendering add_familie_form.php
+[2025-08-19 08:05:57] Family handler started - Method: POST
+[2025-08-19 08:05:57] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-19 08:05:57] Loaded families count: 1
+[2025-08-19 08:06:01] Loaded families count: 1
+[2025-08-19 08:06:01] Rendering add_familie_form.php
+[2025-08-19 08:06:59] Family handler started - Method: POST
+[2025-08-19 08:06:59] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-19 08:06:59] Loaded families count: 1
+[2025-08-19 08:07:36] Family handler started - Method: POST
+[2025-08-19 08:07:36] POST data: Array
+(
+    [action] => edit_family
+    [familie_id] => 1
+    [familie_naam] => Derkssen
+    [familie_straat] => Kerkstraat
+    [familie_huisnummer] => 1
+    [familie_postcode] => 3498 AL
+    [familie_woonplaats] => Dorpje
+    [cancel_edit] => 
+)
+
+[2025-08-19 08:07:36] Loaded families count: 1
+[2025-08-19 08:07:36] Rendering add_familie_form.php
+[2025-08-19 08:07:39] Family handler started - Method: POST
+[2025-08-19 08:07:39] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-19 08:07:39] Loaded families count: 1
+[2025-08-19 08:08:28] Loaded families count: 1
+[2025-08-19 08:08:28] Rendering add_familie_form.php
+[2025-08-19 08:08:31] Family handler started - Method: POST
+[2025-08-19 08:08:31] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-19 08:08:31] Loaded families count: 1
+[2025-08-19 08:09:22] Loaded families count: 1
+[2025-08-19 08:09:22] Rendering add_familie_form.php
+[2025-08-19 08:09:25] Family handler started - Method: POST
+[2025-08-19 08:09:25] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-19 08:09:25] Loaded families count: 1
+[2025-08-19 08:09:48] Loaded families count: 1
+[2025-08-19 08:09:48] Rendering add_familie_form.php
+[2025-08-19 08:09:51] Family handler started - Method: POST
+[2025-08-19 08:09:51] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-19 08:09:51] Loaded families count: 1
+[2025-08-19 08:10:29] Loaded families count: 1
+[2025-08-19 08:10:29] Rendering add_familie_form.php
+[2025-08-19 08:10:31] Family handler started - Method: POST
+[2025-08-19 08:10:31] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-19 08:10:31] Loaded families count: 1
+[2025-08-19 08:10:36] Family handler started - Method: POST
+[2025-08-19 08:10:36] POST data: Array
+(
+    [action] => edit_familielid
+    [edit_familielid_id] => 1
+    [edit_familie_id] => 1
+    [edit_familielid] => 
+)
+
+[2025-08-19 08:10:36] Loaded families count: 1
+[2025-08-19 08:10:43] Loaded families count: 1
+[2025-08-19 08:10:43] Rendering add_familie_form.php
+[2025-08-19 08:10:54] Family handler started - Method: POST
+[2025-08-19 08:10:54] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-19 08:10:54] Loaded families count: 1
+[2025-08-19 08:11:15] Family handler started - Method: POST
+[2025-08-19 08:11:15] POST data: Array
+(
+    [action] => edit_familielid
+    [edit_familielid_id] => 1
+    [edit_familie_id] => 1
+    [edit_familielid] => 
+)
+
+[2025-08-19 08:11:15] Loaded families count: 1
+[2025-08-19 08:12:36] Loaded families count: 1
+[2025-08-19 08:12:36] Rendering add_familie_form.php
+[2025-08-19 08:12:39] Family handler started - Method: POST
+[2025-08-19 08:12:39] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-19 08:12:39] Loaded families count: 1
+[2025-08-19 08:12:43] Family handler started - Method: POST
+[2025-08-19 08:12:43] POST data: Array
+(
+    [action] => edit_familielid
+    [edit_familielid_id] => 1
+    [edit_familie_id] => 1
+    [edit_familielid] => 
+)
+
+[2025-08-19 08:12:43] Loaded families count: 1
+[2025-08-19 08:12:47] Family handler started - Method: POST
+[2025-08-19 08:12:47] POST data: Array
+(
+    [action] => edit_familielid
+    [familielid_id] => 1
+    [familie_id] => 1
+    [familielid_naam] => Linda
+    [familielid_geboortedatum] => 2003-08-14
+    [soort_familielid] => dochter
+    [stalling] => 2
+    [update_familielid] => 
+)
+
+[2025-08-19 08:12:47] Attempting to update family member
+[2025-08-19 08:12:47] POST data for family member update: Array
+(
+    [action] => edit_familielid
+    [familielid_id] => 1
+    [familie_id] => 1
+    [familielid_naam] => Linda
+    [familielid_geboortedatum] => 2003-08-14
+    [soort_familielid] => dochter
+    [stalling] => 2
+    [update_familielid] => 
+)
+
+[2025-08-19 08:12:47] Update family member result: SUCCESS
+[2025-08-19 08:12:47] Loaded families count: 1
+[2025-08-19 08:12:56] Family handler started - Method: POST
+[2025-08-19 08:12:56] POST data: Array
+(
+    [action] => edit_familielid
+    [edit_familielid_id] => 1
+    [edit_familie_id] => 1
+    [edit_familielid] => 
+)
+
+[2025-08-19 08:12:56] Loaded families count: 1
+[2025-08-19 08:13:05] Family handler started - Method: POST
+[2025-08-19 08:13:05] POST data: Array
+(
+    [action] => edit_familielid
+    [familielid_id] => 1
+    [familie_id] => 1
+    [familielid_naam] => Linda
+    [familielid_geboortedatum] => 2003-09-14
+    [soort_familielid] => dochter
+    [stalling] => 2
+    [update_familielid] => 
+)
+
+[2025-08-19 08:13:05] Attempting to update family member
+[2025-08-19 08:13:05] POST data for family member update: Array
+(
+    [action] => edit_familielid
+    [familielid_id] => 1
+    [familie_id] => 1
+    [familielid_naam] => Linda
+    [familielid_geboortedatum] => 2003-09-14
+    [soort_familielid] => dochter
+    [stalling] => 2
+    [update_familielid] => 
+)
+
+[2025-08-19 08:13:05] Update family member result: SUCCESS
+[2025-08-19 08:13:05] Loaded families count: 1
