@@ -80,7 +80,16 @@ class FamilieController {
     }
 
     private function handleDeleteFamilie() {
-        $result = $this->familieModel->delete($_POST['familie_id']);
+        $familieId = $_POST['delete_familie_id'] ?? $_POST['familie_id'] ?? null;
+        
+        if (!$familieId) {
+            return [
+                'success' => false,
+                'message' => "Geen familie ID opgegeven voor verwijdering."
+            ];
+        }
+        
+        $result = $this->familieModel->delete($familieId);
         
         return [
             'success' => $result,

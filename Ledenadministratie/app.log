@@ -853,3 +853,60 @@
 [2025-08-19 13:24:37] Rendering add_familie_form.php
 [2025-08-19 13:24:40] Loaded families count: 2
 [2025-08-19 13:24:46] Loaded families count: 2
+[2025-08-19 14:16:32] Loaded families count: 2
+[2025-08-19 14:16:32] Rendering add_familie_form.php
+[2025-08-19 14:16:35] Loaded families count: 2
+[2025-08-19 14:16:44] Loaded families count: 2
+[2025-08-19 14:16:44] Rendering add_familie_form.php
+[2025-08-19 14:16:49] Loaded families count: 2
+[2025-08-19 14:16:49] Rendering add_familie_form.php
+[2025-08-19 14:16:53] Loaded families count: 2
+[2025-08-19 14:16:53] Rendering add_familie_form.php
+[2025-08-19 14:19:41] Loaded families count: 2
+[2025-08-19 14:19:41] Rendering add_familie_form.php
+[2025-08-19 14:19:47] Loaded families count: 3
+[2025-08-19 14:19:47] Rendering add_familie_form.php
+[2025-08-19 14:19:51] Successfully deleted family with ID 
+[2025-08-19 14:19:51] Loaded families count: 3
+[2025-08-19 14:19:51] Rendering add_familie_form.php
+[2025-08-19 14:22:34] Loaded families count: 3
+[2025-08-19 14:22:34] Rendering add_familie_form.php
+[2025-08-19 14:22:37] Successfully deleted family with ID 3
+[2025-08-19 14:22:37] Loaded families count: 2
+[2025-08-19 14:22:37] Rendering add_familie_form.php
+[2025-08-19 14:22:40] Loaded families count: 2
+[2025-08-19 14:22:40] Rendering add_familie_form.php
+[2025-08-19 14:26:08] Loaded families count: 2
+[2025-08-19 14:26:08] Rendering add_familie_form.php
+[2025-08-19 14:26:14] Loaded families count: 3
+[2025-08-19 14:26:14] Rendering add_familie_form.php
+[2025-08-19 14:26:17] Successfully deleted family with ID 4
+[2025-08-19 14:26:17] Loaded families count: 2
+[2025-08-19 14:26:17] Rendering add_familie_form.php
+[2025-08-19 14:26:21] Loaded families count: 2
+[2025-08-19 14:27:03] Familielid handler started - Method: POST
+[2025-08-19 14:27:03] POST data: Array
+(
+    [action] => add_familielid
+    [familie_id] => 1
+    [familielid_naam] => Dylan
+    [familielid_geboortedatum] => 2006-03-28
+    [soort_familielid] => zoon
+    [stalling] => 1
+    [add_familielid] => 
+)
+
+[2025-08-19 14:27:03] Attempting to add new family member
+[2025-08-19 14:27:03] POST data for family member: Array
+(
+    [action] => add_familielid
+    [familie_id] => 1
+    [familielid_naam] => Dylan
+    [familielid_geboortedatum] => 2006-03-28
+    [soort_familielid] => zoon
+    [stalling] => 1
+    [add_familielid] => 
+)
+
+[2025-08-19 14:27:03] Create family member result: SUCCESS
+[2025-08-19 14:27:03] Loaded families count: 2

@@ -14,6 +14,9 @@ if (basename(__FILE__) == basename($_SERVER['SCRIPT_FILENAME'])) {
     exit;
 }
 
+// Include utils for logging
+require_once __DIR__ . '/../includes/utils.php';
+
 
 class Familie {
     public $id;
@@ -68,10 +71,29 @@ class Familie {
 
     public function delete($id) {
         try {
+            // First check if there are any family members
+            $checkStmt = $this->pdo->prepare("SELECT COUNT(*) FROM familielid WHERE familie_id = ?");
+            $checkStmt->execute([$id]);
+            $memberCount = $checkStmt->fetchColumn();
+            
+            if ($memberCount > 0) {
+                writeLog("Cannot delete family with ID $id: family still has $memberCount member(s)");
+                return false;
+            }
+            
+            // Delete the family
             $stmt = $this->pdo->prepare("DELETE FROM familie WHERE id = ?");
-            return $stmt->execute([$id]);
+            $result = $stmt->execute([$id]);
+            
+            if ($result) {
+                writeLog("Successfully deleted family with ID $id");
+            } else {
+                writeLog("Failed to delete family with ID $id");
+            }
+            
+            return $result;
         } catch (PDOException $e) {
-            writeLog("Familie Model Error: " . $e->getMessage());
+            writeLog("Familie Model Error in delete: " . $e->getMessage());
             return false;
         }
     }
