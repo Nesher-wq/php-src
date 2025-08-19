@@ -430,3 +430,52 @@
 
 [2025-08-19 08:13:05] Update family member result: SUCCESS
 [2025-08-19 08:13:05] Loaded families count: 1
+[2025-08-19 08:34:45] Loaded families count: 1
+[2025-08-19 08:34:45] Rendering add_familie_form.php
+[2025-08-19 08:34:52] Family handler started - Method: POST
+[2025-08-19 08:34:52] POST data: Array
+(
+    [action] => edit_family
+    [edit_familie_id] => 1
+    [edit_familie] => 
+)
+
+[2025-08-19 08:34:52] Loaded families count: 1
+[2025-08-19 08:34:55] Familielid handler started - Method: POST
+[2025-08-19 08:34:55] POST data: Array
+(
+    [action] => edit_familielid
+    [edit_familielid_id] => 1
+    [edit_familie_id] => 1
+    [edit_familielid] => 
+)
+
+[2025-08-19 08:34:55] Loaded families count: 1
+[2025-08-19 08:34:59] Familielid handler started - Method: POST
+[2025-08-19 08:34:59] POST data: Array
+(
+    [action] => edit_familielid
+    [familielid_id] => 1
+    [familie_id] => 1
+    [familielid_naam] => Linda
+    [familielid_geboortedatum] => 2003-09-14
+    [soort_familielid] => dochter
+    [stalling] => 1
+    [update_familielid] => 
+)
+
+[2025-08-19 08:34:59] Attempting to update family member
+[2025-08-19 08:34:59] POST data for family member update: Array
+(
+    [action] => edit_familielid
+    [familielid_id] => 1
+    [familie_id] => 1
+    [familielid_naam] => Linda
+    [familielid_geboortedatum] => 2003-09-14
+    [soort_familielid] => dochter
+    [stalling] => 1
+    [update_familielid] => 
+)
+
+[2025-08-19 08:34:59] Update family member result: SUCCESS
+[2025-08-19 08:34:59] Loaded families count: 1

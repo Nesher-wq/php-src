@@ -107,5 +107,4 @@ class Boekjaar {
         return $stmt->fetchColumn() > 0;
     }
 }
-
 ?>

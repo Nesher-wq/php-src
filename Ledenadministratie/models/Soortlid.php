@@ -48,5 +48,4 @@ class Soortlid {
 
         return $soortleden;
     }
-
 }

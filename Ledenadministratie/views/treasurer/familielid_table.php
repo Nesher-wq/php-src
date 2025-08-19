@@ -1,5 +1,4 @@
 <?php
-use models\Familielid;
 use config\Connection;
 use models\Soortlid;
 

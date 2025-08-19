@@ -68,14 +68,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Family management - secretary or admin
-    $familyActions = ['add_family','edit_family','delete_family','add_familielid','edit_familielid','delete_familielid'];
-    if (isset($_POST['action']) && in_array($_POST['action'], $familyActions, true)) {
-        if (in_array($userRole, ['secretary','admin'], true)) {
-            include __DIR__ . '/handlers/family_handler.php';
-        } else {
-            http_response_code(403);
-            echo "Toegang geweigerd.";
-            exit;
+    $familyActions = ['add_family','edit_family','delete_family'];
+    $familielidActions = ['add_familielid','edit_familielid','delete_familielid'];
+    
+    if (isset($_POST['action'])) {
+        if (in_array($_POST['action'], $familyActions, true)) {
+            if (in_array($userRole, ['secretary','admin'], true)) {
+                include __DIR__ . '/handlers/family_handler.php';
+            }
+        } elseif (in_array($_POST['action'], $familielidActions, true)) {
+            if (in_array($userRole, ['secretary','admin'], true)) {
+                include __DIR__ . '/handlers/familielid_handler.php';
+            }
         }
     }
 
