@@ -20,7 +20,8 @@
                     <?php echo htmlspecialchars($message); ?>
                 </div>
             <?php endif; ?>
-            <form method="POST" action="">
+            <form method="POST" action="index.php">
+                <input type="hidden" name="action" value="change_password">
                 <div class="form-group">
                     <label for="current_password">Huidig wachtwoord:</label>
                     <input type="password" id="current_password" name="current_password" required>

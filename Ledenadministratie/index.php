@@ -28,6 +28,7 @@ $soortlid_model = new \models\Soortlid();
 $soort_leden = $soortlid_model->getAllSoortleden();
 $pdo = $database_pdo;
 $userController = $user_controller;
+$authController = $auth_controller;
 $familieController = $familie_controller;
 
 // Check if user is logged in and get role
@@ -36,6 +37,13 @@ $current_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
 
 // If user is not logged in, show login page
 if ($user_is_logged_in === false) {
+    // Check for login error message
+    $error_message = '';
+    if (isset($_SESSION['login_error'])) {
+        $error_message = $_SESSION['login_error'];
+        unset($_SESSION['login_error']); // Clear the error after displaying
+    }
+    
     require_once __DIR__ . '/views/login.php';
     exit;
 }
@@ -99,6 +107,12 @@ function handlePostRequest($user_role, $familie_controller) {
             exit;
         }
     }
+}
+
+// Handle change password page request (GET)
+if (isset($_GET['action']) && $_GET['action'] === 'change_password') {
+    include __DIR__ . '/views/change_password.php';
+    exit;
 }
 
 // Handle logout action

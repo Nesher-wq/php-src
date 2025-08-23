@@ -39,7 +39,6 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL,
     description VARCHAR(255),
-    first_login BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (id)
 );
 
@@ -82,15 +81,14 @@ ON DUPLICATE KEY UPDATE
     minimum_leeftijd = VALUES(minimum_leeftijd),
     maximum_leeftijd = VALUES(maximum_leeftijd);
 
--- Voeg standaard gebruikers toe met plain text wachtwoorden voor eerste login
-INSERT INTO users (username, password, role, description, first_login)
+-- Voeg standaard gebruikers toe met plain text wachtwoorden
+INSERT INTO users (username, password, role, description)
 VALUES 
-('admin', 'password123', 'admin', 'hoofdadmin', TRUE),
-('kees_penningmeester', 'kees123', 'treasurer', 'Penningmeester', TRUE),
-('jan_secretaris', 'jan123', 'secretary', 'Secretaris', TRUE)
+('admin', 'password123', 'admin', 'hoofdadmin'),
+('kees_penningmeester', 'kees123', 'treasurer', 'Penningmeester'),
+('jan_secretaris', 'jan123', 'secretary', 'Secretaris')
 ON DUPLICATE KEY UPDATE 
-    password = VALUES(password),
-    first_login = VALUES(first_login);
+    password = VALUES(password);
 
 -- Voeg het huidige jaar en vorige jaar toe aan boekjaar tabel met specifieke tarieven
 INSERT INTO boekjaar (jaar, basiscontributie, stallingskosten) 

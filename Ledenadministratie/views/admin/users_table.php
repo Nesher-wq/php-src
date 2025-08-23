@@ -1,6 +1,4 @@
-<div class="section">
-    <h3>Gebruikers</h3>
-    
+<div class="section">    
     <?php if (isset($message)): ?>
         <div class="message <?php echo $message_type; ?>">
             <?php echo htmlspecialchars($message); ?>
@@ -8,6 +6,7 @@
     <?php endif; ?>
     
     <!-- Add User Form -->
+     <h4>Gebruiker toevoegen</h4>
     <form method="POST" class="form-inline">
         <input type="hidden" name="action" value="add_user">
         <input type="text" name="username" placeholder="Gebruikersnaam" required>
@@ -23,6 +22,7 @@
     </form>
 
     <!-- Users Table -->
+     <h3>Gebruikers</h3>
     <table class="data-table">
         <thead>
             <tr>

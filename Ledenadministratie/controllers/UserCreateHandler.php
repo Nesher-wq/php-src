@@ -21,14 +21,14 @@ class UserCreateHandler {
             return false;
         }
         
-        // Hash the password for secure storage
-        $hashedPasswordForStorage = password_hash($passwordParameter, PASSWORD_DEFAULT);
+        // Store the password as plain text - it will be hashed on first login
+        $passwordForStorage = $passwordParameter;
         
         // Prepare the SQL statement to insert the new user
         $insertUserStatement = $this->databaseConnection->prepare("INSERT INTO users (username, password, role, description) VALUES (?, ?, ?, ?)");
         
         // Set up the parameters for the insert statement
-        $insertParameters = array($usernameParameter, $hashedPasswordForStorage, $roleParameter, $descriptionParameter);
+        $insertParameters = array($usernameParameter, $passwordForStorage, $roleParameter, $descriptionParameter);
         
         // Execute the insert statement
         $insertResult = $insertUserStatement->execute($insertParameters);

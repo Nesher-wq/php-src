@@ -2,6 +2,9 @@
 // This file handles contribution calculation requests from users
 // All business logic is handled by the ContributieController
 
+// Access global PDO connection variable
+global $pdo;
+
 // First check if this is a POST request with the correct action
 $requestIsPostMethod = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

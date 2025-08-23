@@ -10,7 +10,7 @@
     <div class="login-container">
         <h2>Inloggen</h2>
         <?php if (isset($error_message)): ?>
-            <div class="error-message">
+            <div class="message error">
                 <?= htmlspecialchars($error_message) ?>
             </div>
         <?php endif; ?>

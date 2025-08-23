@@ -1,6 +1,9 @@
 <?php
 // This file handles user management requests for admin users
 
+// Access global controller variable
+global $userController;
+
 // First check if user has admin role
 $userIsAdmin = false;
 $sessionRoleExists = false;

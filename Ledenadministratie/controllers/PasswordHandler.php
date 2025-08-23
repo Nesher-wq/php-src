@@ -1,6 +1,9 @@
 <?php
 // This file handles password change requests for all users
 
+// Access global controller variables
+global $authController, $userController;
+
 // Check if user wants to access the change password page
 $accessChangePasswordPage = false;
 $scriptFilenameIsIndex = false;

@@ -97,7 +97,6 @@ if ($requestMethodIsPost == true) {
     
     // Handle successful login
     if ($loginWasSuccessful == true) {
-        $_SESSION['login_success'] = 'Login succesvol!';
         $successRedirectLocation = 'Location: /Ledenadministratie/index.php';
         header($successRedirectLocation);
         exit;

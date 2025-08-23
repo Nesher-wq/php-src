@@ -11,6 +11,9 @@ if ($accessIsAllowed == false) {
     exit('Direct access not allowed.');
 }
 
+// Access global PDO connection variable
+global $pdo;
+
 // Include utility functions
 require_once __DIR__ . '/../includes/utils.php';
 
