@@ -1,99 +1,66 @@
 
 <?php
 
+// Include all the user handlers we need
 require_once __DIR__ . '/../models/Familielid.php';
+require_once __DIR__ . '/UserCreateHandler.php';
+require_once __DIR__ . '/UserGetHandler.php';
+require_once __DIR__ . '/UserUpdateHandler.php';
+require_once __DIR__ . '/UserDeleteHandler.php';
 
+// This class is the main controller for handling User requests
 class UserController {
-    private $pdo;
+    // These variables store our database connection and handler objects
+    public $databaseConnection;
+    public $createHandlerObject;
+    public $getHandlerObject;
+    public $updateHandlerObject;
+    public $deleteHandlerObject;
 
-    public function __construct($pdo) {
-        $this->pdo = $pdo;
+    // Constructor function that runs when we create a new UserController
+    public function __construct($databaseConnectionParameter) {
+        // Store the database connection
+        $this->databaseConnection = $databaseConnectionParameter;
+        
+        // Create all the handler objects we need for different operations
+        $this->createHandlerObject = new UserCreateHandler($databaseConnectionParameter);
+        $this->getHandlerObject = new UserGetHandler($databaseConnectionParameter);
+        $this->updateHandlerObject = new UserUpdateHandler($databaseConnectionParameter);
+        $this->deleteHandlerObject = new UserDeleteHandler($databaseConnectionParameter);
     }
 
-    public function createUser($username, $password, $role, $description = '') {
-        // Controleer of username al bestaat
-        $stmt = $this->pdo->prepare("SELECT username FROM users WHERE username = ?");
-        $stmt->execute([$username]);
-        if ($stmt->rowCount() > 0) {
-            return false;
-        }
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $this->pdo->prepare("INSERT INTO users (username, password, role, description) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$username, $hashed_password, $role, $description]);
-        return $stmt->rowCount() > 0;
+    // This function creates a new user using the create handler
+    public function createUser($usernameParameter, $passwordParameter, $roleParameter, $descriptionParameter = '') {
+        // Use our create handler to create the user
+        $createResult = $this->createHandlerObject->createUser($usernameParameter, $passwordParameter, $roleParameter, $descriptionParameter);
+        return $createResult;
     }
 
+    // This function gets all users using the get handler
     public function getAllUsers() {
-        $stmt = $this->pdo->query("SELECT id, username, role, description FROM users ORDER BY role, username ASC");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Use our get handler to get all users
+        $allUsersResult = $this->getHandlerObject->getAllUsers();
+        return $allUsersResult;
     }
 
-    public function getUserById($userId) {
-        $stmt = $this->pdo->prepare("SELECT id, username, role, description FROM users WHERE id = ?");
-        $stmt->execute([$userId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-    
-    public function updateUser($userId, $username, $password, $role, $description = '') {
-        // Haal de huidige gebruiker op
-        $stmt = $this->pdo->prepare("SELECT username, role FROM users WHERE id = ?");
-        $stmt->execute([$userId]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        // De admin gebruiker mag niet van naam of rol veranderen
-        if ($user['username'] === 'admin') {
-            // Voor admin: alleen wachtwoord en beschrijving mogen worden aangepast
-            if (!empty($password)) {
-                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                $stmt = $this->pdo->prepare("UPDATE users SET password = ?, description = ? WHERE id = ?");
-                $stmt->execute([$hashed_password, $description, $userId]);
-            } else {
-                $stmt = $this->pdo->prepare("UPDATE users SET description = ? WHERE id = ?");
-                $stmt->execute([$description, $userId]);
-            }
-            return true;
-        }
-
-        // Check of nieuwe username al bestaat bij andere gebruiker
-        $stmt = $this->pdo->prepare("SELECT id FROM users WHERE username = ? AND id != ?");
-        $stmt->execute([$username, $userId]);
-        if ($stmt->rowCount() > 0) {
-            return false;
-        }
-
-        // Normale update voor andere gebruikers
-        if (empty($password)) {
-            // Update zonder wachtwoord
-            $stmt = $this->pdo->prepare("UPDATE users SET username = ?, role = ?, description = ? WHERE id = ?");
-            $stmt->execute([$username, $role, $description, $userId]);
-        } else {
-            // Update met wachtwoord
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $this->pdo->prepare("UPDATE users SET username = ?, password = ?, role = ?, description = ? WHERE id = ?");
-            $stmt->execute([$username, $hashed_password, $role, $description, $userId]);
-        }
-        return true;
+    // This function gets a specific user by ID using the get handler
+    public function getUserById($userIdParameter) {
+        // Use our get handler to get the user by ID
+        $userByIdResult = $this->getHandlerObject->getUserById($userIdParameter);
+        return $userByIdResult;
     }
     
-    public function deleteUser($userId) {
-        // Haal de te verwijderen gebruiker op
-        $stmt = $this->pdo->prepare("SELECT id, username, role FROM users WHERE id = ?");
-        $stmt->execute([$userId]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        // Voorkom dat een gebruiker zichzelf verwijdert
-        if (isset($_SESSION['user_id']) && $user['id'] == $_SESSION['user_id']) {
-            return false;
-        }
-
-        // De admin gebruiker mag niet verwijderd worden
-        if ($user['username'] === 'admin') {
-            return false;
-        }
-
-        $stmt = $this->pdo->prepare("DELETE FROM users WHERE id = ?");
-        $stmt->execute([$userId]);
-
-        return $stmt->rowCount() > 0;
+    // This function updates a user using the update handler
+    public function updateUser($userIdParameter, $usernameParameter, $passwordParameter, $roleParameter, $descriptionParameter = '') {
+        // Use our update handler to update the user
+        $updateResult = $this->updateHandlerObject->updateUser($userIdParameter, $usernameParameter, $passwordParameter, $roleParameter, $descriptionParameter);
+        return $updateResult;
+    }
+    
+    // This function deletes a user using the delete handler
+    public function deleteUser($userIdParameter) {
+        // Use our delete handler to delete the user
+        $deleteResult = $this->deleteHandlerObject->deleteUser($userIdParameter);
+        return $deleteResult;
     }
 }

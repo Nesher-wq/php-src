@@ -14,7 +14,7 @@
                 <?= htmlspecialchars($error_message) ?>
             </div>
         <?php endif; ?>
-        <form method="POST" action="/Ledenadministratie/handlers/auth_handler.php" class="login-form">
+        <form method="POST" action="/Ledenadministratie/controllers/AuthHandler.php" class="login-form">
             <input type="text" name="username" class="input-field" placeholder="Gebruikersnaam" required>
             <input type="password" name="password" class="input-field" placeholder="Wachtwoord" required>
             <button type="submit" class="login-button">Inloggen</button>

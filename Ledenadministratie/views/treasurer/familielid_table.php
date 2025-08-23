@@ -27,14 +27,6 @@ if (session_status() === PHP_SESSION_NONE) {
 $berekende_contributies = $_SESSION['berekende_contributies'] ?? [];
 $geselecteerd_boekjaar = $_SESSION['geselecteerd_boekjaar'] ?? null;
 
-// Debug log
-error_log('Familielid table - Session data:');
-error_log('Session ID: ' . session_id());
-error_log('Geselecteerd boekjaar: ' . ($geselecteerd_boekjaar ?? 'niet gezet'));
-error_log('Aantal berekende contributies: ' . count($berekende_contributies));
-error_log('Contributies data: ' . print_r($berekende_contributies, true));
-error_log('Aantal familieleden: ' . count($familieleden_lijst));
-
 // Debug output on page if debug parameter is set
 if (isset($_GET['debug'])) {
     echo '<div class="debug-info" style="background: #f5f5f5; padding: 10px; margin: 10px 0; border: 1px solid #ddd;">';

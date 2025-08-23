@@ -1,0 +1,189 @@
+<?php
+// Include the Familie model so we can edit families in the database
+require_once __DIR__ . '/../models/Familie.php';
+require_once __DIR__ . '/../includes/utils.php';
+
+use models\Familie;
+
+// This class handles editing families in the database
+class FamilieEditHandler {
+    // This variable stores our Familie model object
+    public $familieModelObject;
+    
+    // Constructor function that runs when we create a new FamilieEditHandler
+    public function __construct($databaseConnection) {
+        // Create a new Familie model object and store it
+        $this->familieModelObject = new Familie($databaseConnection);
+    }
+    
+    // This is the main function that handles edit requests for families
+    public function handleEditFamilieRequest() {
+        // First check if someone wants to get familie data for editing
+        $editButtonWasClicked = false;
+        if (isset($_POST['edit_familie'])) {
+            $editButtonWasClicked = true;
+        }
+        
+        // If edit button was clicked, get the familie data
+        if ($editButtonWasClicked == true) {
+            $editResult = $this->getFamilieDataForEditing();
+            return $editResult;
+        }
+        
+        // Check if someone wants to update an existing familie
+        $updateButtonWasClicked = false;
+        if (isset($_POST['update_familie'])) {
+            $updateButtonWasClicked = true;
+        }
+        
+        // If update button was clicked, update the familie
+        if ($updateButtonWasClicked == true) {
+            $updateResult = $this->updateExistingFamilieInDatabase();
+            return $updateResult;
+        }
+        
+        // If we get here, something went wrong with the request
+        $errorMessageText = "Invalid edit familie request";
+        $errorResultArray = array();
+        $errorResultArray['success'] = false;
+        $errorResultArray['message'] = $errorMessageText;
+        return $errorResultArray;
+    }
+    
+    // This function gets familie data for editing the form
+    public function getFamilieDataForEditing() {
+        // First we need to get the ID of the familie we want to edit
+        $familieIdToEdit = '';
+        $familieIdFound = false;
+        
+        // Check if the familie ID is in the edit_familie_id field
+        if (isset($_POST['edit_familie_id'])) {
+            $familieIdToEdit = $_POST['edit_familie_id'];
+            $familieIdFound = true;
+        }
+        
+        // Check if we actually found a valid familie ID
+        $familieIdIsEmpty = false;
+        if ($familieIdToEdit == '') {
+            $familieIdIsEmpty = true;
+        }
+        
+        // If we have a valid ID, get the familie data
+        if ($familieIdIsEmpty == false) {
+            // Try to get the familie data from the database
+            $familieDataFromDatabase = $this->getFamilieById($familieIdToEdit);
+            
+            // Create the return array with the familie data
+            $successResultArray = array();
+            $successResultArray['success'] = true;
+            $successResultArray['familie'] = $familieDataFromDatabase;
+            return $successResultArray;
+        }
+        
+        // If we get here, no valid ID was provided
+        $noIdErrorMessage = "No valid familie ID provided for editing";
+        $noIdErrorArray = array();
+        $noIdErrorArray['success'] = false;
+        $noIdErrorArray['message'] = $noIdErrorMessage;
+        return $noIdErrorArray;
+    }
+    
+    // This function updates an existing familie in the database
+    public function updateExistingFamilieInDatabase() {
+        // First we need to get all the form data for updating
+        // Initialize all variables with empty strings
+        $familieIdToUpdate = '';
+        $updatedFamilieNaamFromForm = '';
+        $updatedFamiliestraatFromForm = '';
+        $updatedFamilieHuisnummerFromForm = '';
+        $updatedFamiliePostcodeFromForm = '';
+        $updatedFamilieWoonplaatsFromForm = '';
+        
+        // Get the familie ID that we want to update
+        if (isset($_POST['familie_id'])) {
+            $familieIdToUpdate = $_POST['familie_id'];
+        }
+        
+        // Get the updated familie naam from the form
+        if (isset($_POST['familie_naam'])) {
+            $updatedFamilieNaamFromForm = $_POST['familie_naam'];
+        }
+        
+        // Get the updated familie straat from the form
+        if (isset($_POST['familie_straat'])) {
+            $updatedFamiliestraatFromForm = $_POST['familie_straat'];
+        }
+        
+        // Get the updated familie huisnummer from the form
+        if (isset($_POST['familie_huisnummer'])) {
+            $updatedFamilieHuisnummerFromForm = $_POST['familie_huisnummer'];
+        }
+        
+        // Get the updated familie postcode from the form
+        if (isset($_POST['familie_postcode'])) {
+            $updatedFamiliePostcodeFromForm = $_POST['familie_postcode'];
+        }
+        
+        // Get the updated familie woonplaats from the form
+        if (isset($_POST['familie_woonplaats'])) {
+            $updatedFamilieWoonplaatsFromForm = $_POST['familie_woonplaats'];
+        }
+        
+        // Now try to update the familie using our model
+        $updateOperationResult = $this->familieModelObject->update(
+            $familieIdToUpdate,
+            $updatedFamilieNaamFromForm,
+            $updatedFamiliestraatFromForm,
+            $updatedFamilieHuisnummerFromForm,
+            $updatedFamiliePostcodeFromForm,
+            $updatedFamilieWoonplaatsFromForm
+        );
+        
+        // Check if the update operation was successful
+        $updateWasSuccessful = false;
+        if ($updateOperationResult == true) {
+            $updateWasSuccessful = true;
+        }
+        
+        // If update was successful, return success message
+        if ($updateWasSuccessful == true) {
+            $successMessageText = "Familie succesvol bijgewerkt.";
+            $successResultArray = array();
+            $successResultArray['success'] = true;
+            $successResultArray['message'] = $successMessageText;
+            return $successResultArray;
+        }
+        
+        // If we get here, the update failed
+        $updateFailedErrorMessage = "Fout bij het bijwerken van de familie.";
+        $updateFailedErrorArray = array();
+        $updateFailedErrorArray['success'] = false;
+        $updateFailedErrorArray['message'] = $updateFailedErrorMessage;
+        return $updateFailedErrorArray;
+    }
+    
+    // This function gets a specific familie by its ID
+    public function getFamilieById($familieIdParameter) {
+        // We use a try-catch block to handle any database errors
+        $databaseErrorOccurred = false;
+        $familieDataResult = null;
+        
+        try {
+            // Try to get the familie data from the model
+            $familieDataResult = $this->familieModelObject->getFamilieById($familieIdParameter);
+        } catch (PDOException $exceptionObject) {
+            // If there was a database error, log it
+            $databaseErrorOccurred = true;
+            $errorLogMessage = "Error in getFamilieById: " . $exceptionObject->getMessage();
+            writeLog($errorLogMessage);
+        }
+        
+        // If an error occurred, return null
+        if ($databaseErrorOccurred == true) {
+            return null;
+        }
+        
+        // Return the familie data
+        return $familieDataResult;
+    }
+}

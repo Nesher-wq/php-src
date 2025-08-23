@@ -29,19 +29,12 @@ $soort_leden = $soortlidModel->getAllSoortleden();
 $isLoggedIn = !empty($_SESSION['loggedin']);
 $userRole   = $_SESSION['role'] ?? null;
 
-error_log('Index.php - isLoggedIn: ' . ($isLoggedIn ? 'YES' : 'NO'));
-error_log('Index.php - userRole: ' . ($userRole ?? 'NULL'));
-
 // If not logged in -> show login view and stop
 if (!$isLoggedIn) {
-    error_log('Index.php - User not logged in, showing login form');
-    
-    // login view should handle its own form action (to handlers/auth_handler.php) or post back here
+    // login view should handle its own form action (to controllers/AuthHandler.php) or post back here
     require_once __DIR__ . '/views/login.php';
     exit;
 }
-
-error_log('Index.php - User is logged in, proceeding to dashboard');
 
 // Add these checks before accessing array values
 if (isset($_POST['action']) && $_POST['action'] === 'edit_familielid') {
@@ -71,13 +64,10 @@ if (isset($_POST['action']) && $_POST['action'] === 'edit_familielid') {
 
 // At this point user is logged in; include handlers as needed (role-checked)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    error_log("POST request ontvangen in index.php");
-    error_log("POST data: " . print_r($_POST, true));
-    
     // Contributie handler (treasurer)
     if (isset($_POST['handler']) && $_POST['handler'] === 'contributie') {
         if ($userRole === 'treasurer') {
-            include __DIR__ . '/handlers/contributie_handler.php';
+            include __DIR__ . '/controllers/ContributieHandler.php';
         } else {
             http_response_code(403);
             echo "Toegang geweigerd.";
@@ -87,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Password changes - any logged in user
     if (isset($_POST['action']) && $_POST['action'] === 'change_password') {
-        include __DIR__ . '/handlers/password_handler.php';
+        include __DIR__ . '/controllers/PasswordHandler.php';
     }
 
     // Family management - secretary or admin
@@ -112,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } elseif (in_array($_POST['action'], $familielidActions, true)) {
             if (in_array($userRole, ['secretary','admin'], true)) {
-                include __DIR__ . '/handlers/familielid_handler.php';
+                include __DIR__ . '/controllers/FamilielidHandler.php';
             }
         }
     }
@@ -121,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userActions = ['add_user','edit_user','delete_user'];
     if (isset($_POST['action']) && in_array($_POST['action'], $userActions, true)) {
         if ($userRole === 'admin') {
-            include __DIR__ . '/handlers/user_handler.php';
+            include __DIR__ . '/controllers/UserHandler.php';
         } else {
             http_response_code(403);
             echo "Toegang geweigerd.";
@@ -132,7 +122,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Handle logout action
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
-    error_log('Index.php - Logging out user: ' . ($_SESSION['username'] ?? 'UNKNOWN'));
     session_destroy();
     header('Location: /Ledenadministratie/views/login.php');
     exit;

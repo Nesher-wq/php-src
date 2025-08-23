@@ -85,12 +85,6 @@ class Familie {
             $stmt = $this->pdo->prepare("DELETE FROM familie WHERE id = ?");
             $result = $stmt->execute([$id]);
             
-            if ($result) {
-                writeLog("Successfully deleted family with ID $id");
-            } else {
-                writeLog("Failed to delete family with ID $id");
-            }
-            
             return $result;
         } catch (PDOException $e) {
             writeLog("Familie Model Error in delete: " . $e->getMessage());

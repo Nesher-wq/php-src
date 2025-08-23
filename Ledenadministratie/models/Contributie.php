@@ -31,10 +31,6 @@ class Contributie {
             $stmt = self::$pdo->query("SELECT * FROM familielid");
             $familieleden = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             
-            // Debug logging
-            error_log("Number of familieleden found: " . count($familieleden));
-            error_log("Calculating for boekjaar: " . $boekjaar);
-            
             $berekende_contributies = [];
             $success = true;
 
@@ -78,11 +74,6 @@ class Contributie {
             if ($success) {
                 $_SESSION['berekende_contributies'] = $berekende_contributies;
                 $_SESSION['geselecteerd_boekjaar'] = $boekjaar;
-                
-                // Debug logging
-                error_log("Storing in session - Number of contributies: " . count($berekende_contributies));
-                error_log("Session ID: " . session_id());
-                error_log("New boekjaar set to: " . $boekjaar);
             }
 
             return $success;

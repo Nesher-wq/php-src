@@ -1,91 +1,161 @@
 <?php
 
+// This class handles user authentication (login and logout)
 class AuthController {
-    private $pdo;
+    // This variable stores our database connection
+    public $databaseConnection;
 
-    public function __construct($pdo) {
-        $this->pdo = $pdo;
-        error_log("AuthController: Constructor called");
+    // Constructor function that runs when we create a new AuthController
+    public function __construct($databaseConnectionParameter) {
+        // Store the database connection for later use
+        $this->databaseConnection = $databaseConnectionParameter;
     }
 
-    public function login($username, $password) {
-        error_log("AuthController: Login attempt for user: " . $username);
+    // This function handles user login
+    public function login($usernameParameter, $passwordParameter) {
+        // Use a try-catch block to handle any database errors
+        $databaseErrorOccurred = false;
+        $loginResult = false;
         
         try {
-            $stmt = $this->pdo->prepare("SELECT * FROM users WHERE username = ?");
-            $stmt->execute([$username]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            // Prepare a database query to find the user by username
+            $findUserStatement = $this->databaseConnection->prepare("SELECT * FROM users WHERE username = ?");
+            $queryParameters = array($usernameParameter);
+            $findUserStatement->execute($queryParameters);
+            
+            // Get the user data from the database
+            $userDataFromDatabase = $findUserStatement->fetch(PDO::FETCH_ASSOC);
 
-            if (!$user) {
-                error_log("AuthController: No user found with username: " . $username);
+            // Check if we actually found a user
+            $userWasFound = false;
+            if ($userDataFromDatabase != false) {
+                $userWasFound = true;
+            }
+            
+            // If no user was found, return false
+            if ($userWasFound == false) {
                 return false;
             }
 
-            error_log("AuthController: User found - ID: " . $user['id'] . ", first_login: " . ($user['first_login'] ?? 'NULL'));
-
-            // Check voor eerste login met plain text wachtwoord
-            if (isset($user['first_login']) && $user['first_login'] == 1) {
-                error_log("AuthController: First login detected, comparing passwords");
-                error_log("AuthController: Expected: '" . $user['password'] . "', Got: '" . $password . "'");
-                
-                if ($password === $user['password']) {
-                    error_log("AuthController: Plain text password match - updating to hashed");
-                    
-                    // Hash het wachtwoord en update de gebruiker
-                    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                    $updateStmt = $this->pdo->prepare("UPDATE users SET password = ?, first_login = 0 WHERE id = ?");
-                    $result = $updateStmt->execute([$hashedPassword, $user['id']]);
-                    
-                    if ($result) {
-                        error_log("AuthController: Password updated successfully");
-                    } else {
-                        error_log("AuthController: Failed to update password");
-                    }
-                    
-                    // Set session variables
-                    $_SESSION['loggedin'] = true;
-                    $_SESSION['user_id'] = $user['id'];
-                    $_SESSION['username'] = $user['username'];
-                    $_SESSION['role'] = $user['role'];
-                    
-                    error_log("AuthController: Session variables set - loggedin: " . $_SESSION['loggedin'] . ", user_id: " . $_SESSION['user_id'] . ", role: " . $_SESSION['role']);
-                    return true;
-                } else {
-                    error_log("AuthController: Plain text password mismatch");
-                    return false;
+            // Check if this is the user's first login with plain text password
+            $isFirstLogin = false;
+            $firstLoginFieldExists = false;
+            if (isset($userDataFromDatabase['first_login'])) {
+                $firstLoginFieldExists = true;
+                if ($userDataFromDatabase['first_login'] == 1) {
+                    $isFirstLogin = true;
                 }
             }
             
-            // Normale login check met gehashed wachtwoord
-            if (!isset($user['first_login']) || $user['first_login'] == 0) {
-                error_log("AuthController: Normal login check with hashed password");
-                if (password_verify($password, $user['password'])) {
-                    error_log("AuthController: Hashed password verified successfully");
-                    
-                    $_SESSION['loggedin'] = true;
-                    $_SESSION['user_id'] = $user['id'];
-                    $_SESSION['username'] = $user['username'];
-                    $_SESSION['role'] = $user['role'];
-                    
-                    return true;
-                } else {
-                    error_log("AuthController: Hashed password verification failed");
-                    return false;
-                }
+            // Handle first login case
+            if ($firstLoginFieldExists == true && $isFirstLogin == true) {
+                $loginResult = $this->handleFirstLogin($userDataFromDatabase, $passwordParameter);
+                return $loginResult;
             }
             
-        } catch (Exception $e) {
-            error_log("AuthController: Database error: " . $e->getMessage());
+            // Handle normal login case (not first login)
+            $isNotFirstLogin = false;
+            if ($firstLoginFieldExists == false) {
+                $isNotFirstLogin = true;
+            }
+            if ($firstLoginFieldExists == true && $isFirstLogin == false) {
+                $isNotFirstLogin = true;
+            }
+            
+            if ($isNotFirstLogin == true) {
+                $loginResult = $this->handleNormalLogin($userDataFromDatabase, $passwordParameter);
+                return $loginResult;
+            }
+            
+        } catch (Exception $exceptionObject) {
+            // If there was a database error, log it
+            $databaseErrorOccurred = true;
+            $errorLogMessage = "AuthController: Database error: " . $exceptionObject->getMessage();
+            error_log($errorLogMessage);
+        }
+        
+        // If an error occurred, return false
+        if ($databaseErrorOccurred == true) {
             return false;
         }
         
-        error_log("AuthController: Login failed for user: " . $username);
+        // Default return false if nothing else worked
         return false;
     }
 
+    // This function handles first login with plain text password
+    public function handleFirstLogin($userDataArray, $plainTextPassword) {
+        // Check if the plain text password matches
+        $passwordMatches = false;
+        if ($plainTextPassword === $userDataArray['password']) {
+            $passwordMatches = true;
+        }
+        
+        // If password doesn't match, return false
+        if ($passwordMatches == false) {
+            return false;
+        }
+        
+        // Hash the password for storage
+        $hashedPasswordForStorage = password_hash($plainTextPassword, PASSWORD_DEFAULT);
+        
+        // Update the user's password in the database
+        $updatePasswordStatement = $this->databaseConnection->prepare("UPDATE users SET password = ?, first_login = 0 WHERE id = ?");
+        $updateParameters = array($hashedPasswordForStorage, $userDataArray['id']);
+        $updateResult = $updatePasswordStatement->execute($updateParameters);
+        
+        // Check if the password update was successful
+        $updateWasSuccessful = false;
+        if ($updateResult == true) {
+            $updateWasSuccessful = true;
+        }
+        
+        // If update failed, log error and return false
+        if ($updateWasSuccessful == false) {
+            $updateErrorMessage = "AuthController: Failed to update password for user ID: " . $userDataArray['id'];
+            error_log($updateErrorMessage);
+            return false;
+        }
+        
+        // Set session variables for successful login
+        $this->setSessionVariablesForUser($userDataArray);
+        
+        // Return true for successful login
+        return true;
+    }
+
+    // This function handles normal login with hashed password
+    public function handleNormalLogin($userDataArray, $passwordToVerify) {
+        // Verify the password against the stored hash
+        $passwordIsCorrect = password_verify($passwordToVerify, $userDataArray['password']);
+        
+        // If password is correct, set session variables
+        if ($passwordIsCorrect == true) {
+            $this->setSessionVariablesForUser($userDataArray);
+            return true;
+        }
+        
+        // If password is incorrect, return false
+        return false;
+    }
+
+    // This function sets session variables for a logged in user
+    public function setSessionVariablesForUser($userDataArray) {
+        // Set all the required session variables
+        $_SESSION['loggedin'] = true;
+        $_SESSION['user_id'] = $userDataArray['id'];
+        $_SESSION['username'] = $userDataArray['username'];
+        $_SESSION['role'] = $userDataArray['role'];
+    }
+
+    // This function handles user logout
     public function logout() {
+        // Destroy the current session
         session_destroy();
-        header('Location: /Ledenadministratie/index.php');
+        
+        // Redirect to the main page
+        $redirectLocation = 'Location: /Ledenadministratie/index.php';
+        header($redirectLocation);
         exit;
     }
 }
