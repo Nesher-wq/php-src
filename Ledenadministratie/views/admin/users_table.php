@@ -49,15 +49,15 @@
                     <form method="POST" style="display: inline;">
                         <input type="hidden" name="action" value="edit_user">
                         <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['id'] ?? '') ?>">
-                        <input type="text" name="username" value="<?= htmlspecialchars($user['username'] ?? '') ?>" required style="width: 100px;">
-                        <input type="password" name="password" placeholder="Nieuw wachtwoord" style="width: 100px;">
-                        <select name="role" required style="width: 100px;">
+                        <input type="text" name="username" value="<?= htmlspecialchars($user['username'] ?? '') ?>" required style="width: 240px;">
+                        <input type="password" name="password" placeholder="Nieuw wachtwoord" style="width: 240px;">
+                        <select name="role" required style="width: 240px;">
                             <option value="admin" <?= ($user['role'] ?? '') === 'admin' ? 'selected' : '' ?>>Admin</option>
                             <option value="secretary" <?= ($user['role'] ?? '') === 'secretary' ? 'selected' : '' ?>>Secretaris</option>
                             <option value="treasurer" <?= ($user['role'] ?? '') === 'treasurer' ? 'selected' : '' ?>>Penningmeester</option>
                         </select>
-                        <input type="text" name="description" value="<?= htmlspecialchars($user['description'] ?? '') ?>" style="width: 100px;">
-                        <button type="submit">Bijwerken</button>
+                        <input type="text" name="description" placeholder="Beschrijving" value="<?= htmlspecialchars($user['description'] ?? '') ?>" style="width: 240px;">
+                        <button type="submit" style="width: 240px;">Bijwerken</button>
                     </form>
                     
                     <!-- Delete Form - Hidden for admin's own account and main admin -->
@@ -65,7 +65,7 @@
                     <form method="POST" style="display: inline;" onsubmit="return confirm('Weet je zeker dat je deze gebruiker wilt verwijderen?')">
                         <input type="hidden" name="action" value="delete_user">
                         <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['id'] ?? '') ?>">
-                        <button type="submit" class="delete-btn">Verwijderen</button>
+                        <button type="submit" class="delete-btn" style="width: 240px;">Verwijderen</button>
                     </form>
                     <?php endif; ?>
                 </td>
