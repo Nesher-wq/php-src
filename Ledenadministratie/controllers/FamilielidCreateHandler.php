@@ -21,7 +21,7 @@ class FamilielidCreateHandler {
         }
         
         // If soort_lid_id was not provided, determine automatically
-        if ($soortLidIdWasProvided == false) {
+        if (!$soortLidIdWasProvided) {
             $soortLidIdToUse = $this->determineSoortLidByAge($geboortedatumParameter);
         }
         

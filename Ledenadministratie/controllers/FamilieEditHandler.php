@@ -3,8 +3,6 @@
 require_once __DIR__ . '/../models/Familie.php';
 require_once __DIR__ . '/../includes/utils.php';
 
-use models\Familie;
-
 // This class handles editing families in the database
 class FamilieEditHandler {
     // This variable stores our Familie model object
@@ -13,7 +11,7 @@ class FamilieEditHandler {
     // Constructor function that runs when we create a new FamilieEditHandler
     public function __construct($databaseConnection) {
         // Create a new Familie model object and store it
-        $this->familieModelObject = new Familie($databaseConnection);
+        $this->familieModelObject = new models\Familie($databaseConnection);
     }
     
     // This is the main function that handles edit requests for families
@@ -25,7 +23,7 @@ class FamilieEditHandler {
         }
         
         // If edit button was clicked, get the familie data
-        if ($editButtonWasClicked == true) {
+        if ($editButtonWasClicked) {
             $editResult = $this->getFamilieDataForEditing();
             return $editResult;
         }
@@ -37,7 +35,7 @@ class FamilieEditHandler {
         }
         
         // If update button was clicked, update the familie
-        if ($updateButtonWasClicked == true) {
+        if ($updateButtonWasClicked) {
             $updateResult = $this->updateExistingFamilieInDatabase();
             return $updateResult;
         }
@@ -54,12 +52,10 @@ class FamilieEditHandler {
     public function getFamilieDataForEditing() {
         // First we need to get the ID of the familie we want to edit
         $familieIdToEdit = '';
-        $familieIdFound = false;
         
         // Check if the familie ID is in the edit_familie_id field
         if (isset($_POST['edit_familie_id'])) {
             $familieIdToEdit = $_POST['edit_familie_id'];
-            $familieIdFound = true;
         }
         
         // Check if we actually found a valid familie ID
@@ -69,7 +65,7 @@ class FamilieEditHandler {
         }
         
         // If we have a valid ID, get the familie data
-        if ($familieIdIsEmpty == false) {
+        if (!$familieIdIsEmpty) {
             // Try to get the familie data from the database
             $familieDataFromDatabase = $this->getFamilieById($familieIdToEdit);
             
@@ -141,12 +137,12 @@ class FamilieEditHandler {
         
         // Check if the update operation was successful
         $updateWasSuccessful = false;
-        if ($updateOperationResult == true) {
+        if ($updateOperationResult) {
             $updateWasSuccessful = true;
         }
         
         // If update was successful, return success message
-        if ($updateWasSuccessful == true) {
+        if ($updateWasSuccessful) {
             $successMessageText = "Familie succesvol bijgewerkt.";
             $successResultArray = array();
             $successResultArray['success'] = true;
@@ -179,7 +175,7 @@ class FamilieEditHandler {
         }
         
         // If an error occurred, return null
-        if ($databaseErrorOccurred == true) {
+        if ($databaseErrorOccurred) {
             return null;
         }
         

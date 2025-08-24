@@ -27,21 +27,65 @@ writeLog('Loaded families count: ' . count($families));
         <tbody>
             <?php foreach ($families as $familie): ?>
                 <tr>
-                    <td><?= htmlspecialchars($familie['naam']) ?></td>
+                    <td><?php 
+                        $familieNaam = '';
+                        if (isset($familie['naam'])) {
+                            $familieNaam = $familie['naam'];
+                        }
+                        echo htmlspecialchars($familieNaam); 
+                    ?></td>
                     <td>
-                        <?= htmlspecialchars($familie['straat'] . ' ' . $familie['huisnummer']) ?><br>
-                        <?= htmlspecialchars($familie['postcode'] . ' ' . $familie['woonplaats']) ?>
+                        <?php 
+                        $familieStraat = '';
+                        $familieHuisnummer = '';
+                        if (isset($familie['straat'])) {
+                            $familieStraat = $familie['straat'];
+                        }
+                        if (isset($familie['huisnummer'])) {
+                            $familieHuisnummer = $familie['huisnummer'];
+                        }
+                        echo htmlspecialchars($familieStraat . ' ' . $familieHuisnummer); 
+                        ?><br>
+                        <?php 
+                        $familiePostcode = '';
+                        $familieWoonplaats = '';
+                        if (isset($familie['postcode'])) {
+                            $familiePostcode = $familie['postcode'];
+                        }
+                        if (isset($familie['woonplaats'])) {
+                            $familieWoonplaats = $familie['woonplaats'];
+                        }
+                        echo htmlspecialchars($familiePostcode . ' ' . $familieWoonplaats); 
+                        ?>
                     </td>
-                    <td><?= htmlspecialchars($familie['aantal_leden']) ?></td>
+                    <td><?php 
+                        $aantalLeden = '';
+                        if (isset($familie['aantal_leden'])) {
+                            $aantalLeden = $familie['aantal_leden'];
+                        }
+                        echo htmlspecialchars($aantalLeden); 
+                    ?></td>
                     <td>
                         <form method="POST" style="display:inline">
                             <input type="hidden" name="action" value="edit_family">
-                            <input type="hidden" name="edit_familie_id" value="<?= $familie['id'] ?>">
+                            <input type="hidden" name="edit_familie_id" value="<?php 
+                                $familieIdForEdit = '';
+                                if (isset($familie['id'])) {
+                                    $familieIdForEdit = $familie['id'];
+                                }
+                                echo $familieIdForEdit; 
+                            ?>">
                             <button type="submit" name="edit_familie" class="action-btn edit-btn">Bewerken</button>
                         </form>
                         <form method="POST" style="display:inline">
                             <input type="hidden" name="action" value="delete_family">
-                            <input type="hidden" name="delete_familie_id" value="<?= $familie['id'] ?>">
+                            <input type="hidden" name="delete_familie_id" value="<?php 
+                                $familieIdForDelete = '';
+                                if (isset($familie['id'])) {
+                                    $familieIdForDelete = $familie['id'];
+                                }
+                                echo $familieIdForDelete; 
+                            ?>">
                             <button type="submit" name="delete_familie" class="action-btn delete-btn" 
                                     onclick="return confirm('Weet je zeker dat je deze familie wilt verwijderen?')">
                                 Verwijderen

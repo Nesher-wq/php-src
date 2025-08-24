@@ -7,8 +7,6 @@ require_once __DIR__ . '/FamilieEditHandler.php';
 require_once __DIR__ . '/FamilieDeleteHandler.php';
 require_once __DIR__ . '/FamilieGetHandler.php';
 
-use models\Familie;
-
 // This class is the main controller for handling Familie requests
 class FamilieController {
     // These variables store our Familie model and handler objects
@@ -21,7 +19,7 @@ class FamilieController {
     // Constructor function that runs when we create a new FamilieController
     public function __construct($databaseConnection) {
         // Create a new Familie model object and store it
-        $this->familieModelObject = new Familie($databaseConnection);
+        $this->familieModelObject = new models\Familie($databaseConnection);
         
         // Create all the handler objects we need for different operations
         $this->addHandlerObject = new FamilieAddHandler($databaseConnection);
@@ -39,7 +37,7 @@ class FamilieController {
         }
         
         // If request method is not POST, return error
-        if ($requestMethodIsPost == false) {
+        if (!$requestMethodIsPost) {
             $invalidMethodErrorMessage = 'Invalid request method';
             $invalidMethodErrorArray = array();
             $invalidMethodErrorArray['success'] = false;
@@ -49,9 +47,7 @@ class FamilieController {
 
         // Get the action from POST data
         $actionFromPostData = '';
-        $actionExists = false;
         if (isset($_POST['action'])) {
-            $actionExists = true;
             $actionFromPostData = $_POST['action'];
         }
 
@@ -62,7 +58,7 @@ class FamilieController {
         }
         
         // If action is add family, use the add handler
-        if ($actionIsAddFamily == true) {
+        if ($actionIsAddFamily) {
             $addHandlerResult = $this->addHandlerObject->handleAddFamilieRequest();
             return $addHandlerResult;
         }
@@ -74,7 +70,7 @@ class FamilieController {
         }
         
         // If action is edit family, use the edit handler
-        if ($actionIsEditFamily == true) {
+        if ($actionIsEditFamily) {
             $editHandlerResult = $this->editHandlerObject->handleEditFamilieRequest();
             return $editHandlerResult;
         }
@@ -86,7 +82,7 @@ class FamilieController {
         }
         
         // If action is delete family, use the delete handler
-        if ($actionIsDeleteFamily == true) {
+        if ($actionIsDeleteFamily) {
             $deleteHandlerResult = $this->deleteHandlerObject->handleDeleteFamilieRequest();
             return $deleteHandlerResult;
         }

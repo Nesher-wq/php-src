@@ -33,7 +33,7 @@ class AuthController {
             }
             
             // If no user was found, return false
-            if ($userWasFound == false) {
+            if (!$userWasFound) {
                 return false;
             }
 
@@ -41,7 +41,7 @@ class AuthController {
             $passwordIsCorrectHashed = password_verify($passwordParameter, $userDataFromDatabase['password']);
             
             // If hashed password verification worked, login is successful
-            if ($passwordIsCorrectHashed == true) {
+            if ($passwordIsCorrectHashed) {
                 $this->setSessionVariablesForUser($userDataFromDatabase);
                 return true;
             }
@@ -53,7 +53,7 @@ class AuthController {
             }
             
             // If plain text password matches, hash it and update database
-            if ($passwordIsCorrectPlainText == true) {
+            if ($passwordIsCorrectPlainText) {
                 // Hash the password for storage
                 $hashedPasswordForStorage = password_hash($passwordParameter, PASSWORD_DEFAULT);
                 
@@ -64,12 +64,12 @@ class AuthController {
                 
                 // Check if the password update was successful
                 $updateWasSuccessful = false;
-                if ($updateResult == true) {
+                if ($updateResult) {
                     $updateWasSuccessful = true;
                 }
                 
                 // If update failed, log error but still allow login since password was correct
-                if ($updateWasSuccessful == false) {
+                if (!$updateWasSuccessful) {
                     $updateErrorMessage = "AuthController: Failed to update password for user ID: " . $userDataFromDatabase['id'];
                     error_log($updateErrorMessage);
                 }
@@ -90,7 +90,7 @@ class AuthController {
         }
         
         // If an error occurred, return false
-        if ($databaseErrorOccurred == true) {
+        if ($databaseErrorOccurred) {
             return false;
         }
         

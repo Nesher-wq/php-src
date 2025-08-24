@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Handle login POST request
-if ($requestMethodIsPost == true) {
+if ($requestMethodIsPost) {
     // Get username and password from POST data
     $usernameFromForm = '';
     $passwordFromForm = '';
@@ -54,14 +54,14 @@ if ($requestMethodIsPost == true) {
     
     // If username or password is empty, show error
     $credentialsAreMissing = false;
-    if ($usernameIsEmpty == true) {
+    if ($usernameIsEmpty) {
         $credentialsAreMissing = true;
     }
-    if ($passwordIsEmpty == true) {
+    if ($passwordIsEmpty) {
         $credentialsAreMissing = true;
     }
     
-    if ($credentialsAreMissing == true) {
+    if ($credentialsAreMissing) {
         $_SESSION['login_error'] = 'Gebruikersnaam en wachtwoord zijn verplicht.';
         $redirectLocation = 'Location: /Ledenadministratie/index.php';
         header($redirectLocation);
@@ -84,7 +84,7 @@ if ($requestMethodIsPost == true) {
         $loginResult = $authControllerObject->login($usernameFromForm, $passwordFromForm);
         
         // Check if login was successful
-        if ($loginResult == true) {
+        if ($loginResult) {
             $loginWasSuccessful = true;
         }
         
@@ -96,14 +96,14 @@ if ($requestMethodIsPost == true) {
     }
     
     // Handle successful login
-    if ($loginWasSuccessful == true) {
+    if ($loginWasSuccessful) {
         $successRedirectLocation = 'Location: /Ledenadministratie/index.php';
         header($successRedirectLocation);
         exit;
     }
     
     // Handle failed login
-    if ($loginWasSuccessful == false && $databaseErrorOccurred == false) {
+    if (!$loginWasSuccessful && !$databaseErrorOccurred) {
         $_SESSION['login_error'] = 'Ongeldige gebruikersnaam of wachtwoord.';
         $errorRedirectLocation = 'Location: /Ledenadministratie/index.php';
         header($errorRedirectLocation);
@@ -111,7 +111,7 @@ if ($requestMethodIsPost == true) {
     }
     
     // Handle database error during login
-    if ($databaseErrorOccurred == true) {
+    if ($databaseErrorOccurred) {
         $_SESSION['login_error'] = 'Er is een fout opgetreden bij het inloggen: Database error';
         $databaseErrorRedirectLocation = 'Location: /Ledenadministratie/index.php';
         header($databaseErrorRedirectLocation);
@@ -132,7 +132,7 @@ if (isset($_GET['action'])) {
 }
 
 // Handle logout request
-if ($logoutRequested == true) {
+if ($logoutRequested) {
     // Clear all session variables
     session_unset();
     

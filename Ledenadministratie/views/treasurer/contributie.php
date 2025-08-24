@@ -7,14 +7,12 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/../../config/connection.php';
 require_once __DIR__ . '/../../models/Contributie.php';
 
-use models\Contributie;
-
 // Initialize database connection
 $conn = new \config\Connection();
 $pdo = $conn->getConnection();
 
 // Set PDO instance in Contributie model
-Contributie::setPDO($pdo);
+models\Contributie::setPDO($pdo);
 
 // Add debug information
 if (isset($_GET['debug'])) {
@@ -46,11 +44,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         try {
             // Create contributies for the selected year and get the data
-            $calculated_data = Contributie::calculateContributiesWithoutSaving($boekjaar);
+            $calculated_data = models\Contributie::calculateContributiesWithoutSaving($boekjaar);
             $selected_year = $boekjaar;
             
-            if ($calculated_data !== false && !empty($calculated_data)) {
-                $_SESSION['message'] = "Contributies zijn berekend voor " . htmlspecialchars($boekjaar);
+            $calculationSuccessful = false;
+            $calculationHasData = false;
+            
+            if ($calculated_data !== false) {
+                $calculationSuccessful = true;
+                if (!empty($calculated_data)) {
+                    $calculationHasData = true;
+                }
+            }
+            
+            if ($calculationSuccessful) {
+                if ($calculationHasData) {
+                    $_SESSION['message'] = "Contributies zijn berekend voor " . htmlspecialchars($boekjaar);
+                }
             } else {
                 $_SESSION['error'] = "Er is een fout opgetreden bij het berekenen van de contributies.";
             }

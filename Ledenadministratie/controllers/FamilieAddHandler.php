@@ -3,8 +3,6 @@
 require_once __DIR__ . '/../models/Familie.php';
 require_once __DIR__ . '/../includes/utils.php';
 
-use models\Familie;
-
 // This class handles adding new families to the database
 class FamilieAddHandler {
     // This variable stores our Familie model object
@@ -13,7 +11,7 @@ class FamilieAddHandler {
     // Constructor function that runs when we create a new FamilieAddHandler
     public function __construct($databaseConnection) {
         // Create a new Familie model object and store it
-        $this->familieModelObject = new Familie($databaseConnection);
+        $this->familieModelObject = new models\Familie($databaseConnection);
     }
     
     // This is the main function that handles add requests for families
@@ -25,7 +23,7 @@ class FamilieAddHandler {
         }
         
         // If the add button was clicked, we try to add the new familie
-        if ($addButtonWasClicked == true) {
+        if ($addButtonWasClicked) {
             $addResult = $this->addNewFamilieToDatabase();
             return $addResult;
         }
@@ -49,37 +47,27 @@ class FamilieAddHandler {
         $familieWoonplaatsFromForm = '';
         
         // Get the familie naam from the form
-        $familieNaamFieldExists = false;
         if (isset($_POST['familie_naam'])) {
-            $familieNaamFieldExists = true;
             $familieNaamFromForm = $_POST['familie_naam'];
         }
         
         // Get the familie straat from the form
-        $familiestraatFieldExists = false;
         if (isset($_POST['familie_straat'])) {
-            $familiestraatFieldExists = true;
             $familiestraatFromForm = $_POST['familie_straat'];
         }
         
         // Get the familie huisnummer from the form
-        $familieHuisnummerFieldExists = false;
         if (isset($_POST['familie_huisnummer'])) {
-            $familieHuisnummerFieldExists = true;
             $familieHuisnummerFromForm = $_POST['familie_huisnummer'];
         }
         
         // Get the familie postcode from the form
-        $familiePostcodeFieldExists = false;
         if (isset($_POST['familie_postcode'])) {
-            $familiePostcodeFieldExists = true;
             $familiePostcodeFromForm = $_POST['familie_postcode'];
         }
         
         // Get the familie woonplaats from the form
-        $familieWoonplaatsFieldExists = false;
         if (isset($_POST['familie_woonplaats'])) {
-            $familieWoonplaatsFieldExists = true;
             $familieWoonplaatsFromForm = $_POST['familie_woonplaats'];
         }
         
@@ -94,12 +82,12 @@ class FamilieAddHandler {
         
         // Check if the create operation was successful
         $createWasSuccessful = false;
-        if ($createOperationResult == true) {
+        if ($createOperationResult) {
             $createWasSuccessful = true;
         }
         
         // If create was successful, return success message
-        if ($createWasSuccessful == true) {
+        if ($createWasSuccessful) {
             $successMessageText = "Familie succesvol toegevoegd.";
             $successResultArray = array();
             $successResultArray['success'] = true;

@@ -36,35 +36,136 @@
         <tbody>
             <?php 
             // Veiligheidscheck voor $users variabele
-            if (isset($users) && is_array($users) && count($users) > 0): 
+            $usersExist = false;
+            $usersIsArray = false;
+            $usersHasData = false;
+            
+            if (isset($users)) {
+                $usersExist = true;
+                if (is_array($users)) {
+                    $usersIsArray = true;
+                    if (count($users) > 0) {
+                        $usersHasData = true;
+                    }
+                }
+            }
+            
+            $shouldShowUsers = false;
+            if ($usersExist && $usersIsArray && $usersHasData) {
+                $shouldShowUsers = true;
+            }
+            
+            if ($shouldShowUsers): 
                 foreach ($users as $user): 
             ?>
             <tr>
-                <td><?= htmlspecialchars($user['id'] ?? '') ?></td>
-                <td><?= htmlspecialchars($user['username'] ?? '') ?></td>
-                <td><?= htmlspecialchars($user['role'] ?? '') ?></td>
-                <td><?= htmlspecialchars($user['description'] ?? '') ?></td>
+                <td><?php 
+                    $userIdDisplay = '';
+                    if (isset($user['id'])) {
+                        $userIdDisplay = $user['id'];
+                    }
+                    echo htmlspecialchars($userIdDisplay); 
+                ?></td>
+                <td><?php 
+                    $usernameDisplay = '';
+                    if (isset($user['username'])) {
+                        $usernameDisplay = $user['username'];
+                    }
+                    echo htmlspecialchars($usernameDisplay); 
+                ?></td>
+                <td><?php 
+                    $roleDisplay = '';
+                    if (isset($user['role'])) {
+                        $roleDisplay = $user['role'];
+                    }
+                    echo htmlspecialchars($roleDisplay); 
+                ?></td>
+                <td><?php 
+                    $descriptionDisplay = '';
+                    if (isset($user['description'])) {
+                        $descriptionDisplay = $user['description'];
+                    }
+                    echo htmlspecialchars($descriptionDisplay); 
+                ?></td>
                 <td>
                     <!-- Edit Form -->
                     <form method="POST" style="display: inline;">
                         <input type="hidden" name="action" value="edit_user">
-                        <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['id'] ?? '') ?>">
-                        <input type="text" name="username" value="<?= htmlspecialchars($user['username'] ?? '') ?>" required style="width: 240px;">
+                        <input type="hidden" name="user_id" value="<?php 
+                            $userIdForForm = '';
+                            if (isset($user['id'])) {
+                                $userIdForForm = $user['id'];
+                            }
+                            echo htmlspecialchars($userIdForForm); 
+                        ?>">
+                        <input type="text" name="username" value="<?php 
+                            $usernameForForm = '';
+                            if (isset($user['username'])) {
+                                $usernameForForm = $user['username'];
+                            }
+                            echo htmlspecialchars($usernameForForm); 
+                        ?>" required style="width: 240px;">
                         <input type="password" name="password" placeholder="Nieuw wachtwoord" style="width: 240px;">
                         <select name="role" required style="width: 240px;">
-                            <option value="admin" <?= ($user['role'] ?? '') === 'admin' ? 'selected' : '' ?>>Admin</option>
-                            <option value="secretary" <?= ($user['role'] ?? '') === 'secretary' ? 'selected' : '' ?>>Secretaris</option>
-                            <option value="treasurer" <?= ($user['role'] ?? '') === 'treasurer' ? 'selected' : '' ?>>Penningmeester</option>
+                            <option value="admin" <?php 
+                                $userRoleFromData = '';
+                                if (isset($user['role'])) {
+                                    $userRoleFromData = $user['role'];
+                                }
+                                if ($userRoleFromData === 'admin') {
+                                    echo 'selected';
+                                }
+                            ?>>Admin</option>
+                            <option value="secretary" <?php 
+                                if ($userRoleFromData === 'secretary') {
+                                    echo 'selected';
+                                }
+                            ?>>Secretaris</option>
+                            <option value="treasurer" <?php 
+                                if ($userRoleFromData === 'treasurer') {
+                                    echo 'selected';
+                                }
+                            ?>>Penningmeester</option>
                         </select>
-                        <input type="text" name="description" placeholder="Beschrijving" value="<?= htmlspecialchars($user['description'] ?? '') ?>" style="width: 240px;">
+                        <input type="text" name="description" placeholder="Beschrijving" value="<?php 
+                            $descriptionForForm = '';
+                            if (isset($user['description'])) {
+                                $descriptionForForm = $user['description'];
+                            }
+                            echo htmlspecialchars($descriptionForForm); 
+                        ?>" style="width: 240px;">
                         <button type="submit" style="width: 240px;">Bijwerken</button>
                     </form>
                     
                     <!-- Delete Form - Hidden for admin's own account and main admin -->
-                    <?php if ($user['username'] !== $currentUsername && $user['username'] !== 'admin'): ?>
+                    <?php 
+                    $userCanBeDeleted = true;
+                    $userUsernameFromData = '';
+                    if (isset($user['username'])) {
+                        $userUsernameFromData = $user['username'];
+                    }
+                    
+                    // Check if this is current user
+                    if ($userUsernameFromData === $currentUsername) {
+                        $userCanBeDeleted = false;
+                    }
+                    
+                    // Check if this is main admin
+                    if ($userUsernameFromData === 'admin') {
+                        $userCanBeDeleted = false;
+                    }
+                    
+                    if ($userCanBeDeleted): 
+                    ?>
                     <form method="POST" style="display: inline;" onsubmit="return confirm('Weet je zeker dat je deze gebruiker wilt verwijderen?')">
                         <input type="hidden" name="action" value="delete_user">
-                        <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['id'] ?? '') ?>">
+                        <input type="hidden" name="user_id" value="<?php 
+                            $userIdForDelete = '';
+                            if (isset($user['id'])) {
+                                $userIdForDelete = $user['id'];
+                            }
+                            echo htmlspecialchars($userIdForDelete); 
+                        ?>">
                         <button type="submit" class="delete-btn" style="width: 240px;">Verwijderen</button>
                     </form>
                     <?php endif; ?>
@@ -76,9 +177,10 @@
             ?>
             <tr>
                 <td colspan="5" style="text-align: center; padding: 20px;">
-                    <?php if (!isset($users)): ?>
+                    <?php 
+                    if (!$usersExist): ?>
                         Fout: Gebruikersdata niet geladen
-                    <?php elseif (!is_array($users)): ?>
+                    <?php elseif (!$usersIsArray): ?>
                         Fout: Ongeldige gebruikersdata
                     <?php else: ?>
                         Geen gebruikers gevonden

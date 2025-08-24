@@ -22,12 +22,8 @@ class ContributieController {
         
         try {
             // Check if session is started, if not start it
-            $sessionIsActive = false;
             if (session_status() === PHP_SESSION_NONE) {
                 session_start();
-                $sessionIsActive = true;
-            } else {
-                $sessionIsActive = true;
             }
             
             // Set PDO connection in the Contributie model
@@ -37,12 +33,10 @@ class ContributieController {
             $calculationWasSuccessful = \models\Contributie::createContributies($boekjaarParameter);
             
             // Check if calculation was successful
-            if ($calculationWasSuccessful == true) {
+            if ($calculationWasSuccessful) {
                 // Get the calculated contributions from session
                 $berekendContributiesFromSession = array();
-                $contributiesExistInSession = false;
                 if (isset($_SESSION['berekende_contributies'])) {
-                    $contributiesExistInSession = true;
                     $berekendContributiesFromSession = $_SESSION['berekende_contributies'];
                 }
                 
@@ -67,7 +61,7 @@ class ContributieController {
         }
         
         // Return error result if exception occurred
-        if ($errorOccurred == true) {
+        if ($errorOccurred) {
             return $resultArray;
         }
         
@@ -81,27 +75,15 @@ class ContributieController {
     // This function validates if user has access to contribution functions
     public function validateAccess($sessionParameter) {
         // Check if role exists in session
-        $roleExistsInSession = false;
-        if (isset($sessionParameter['role'])) {
-            $roleExistsInSession = true;
-        }
-        
-        // If role doesn't exist, access is denied
-        if ($roleExistsInSession == false) {
+        if (!isset($sessionParameter['role'])) {
             return false;
         }
         
         // Get the role from session
         $userRoleFromSession = $sessionParameter['role'];
         
-        // Check if role is treasurer
-        $userIsTreasurer = false;
-        if ($userRoleFromSession === 'treasurer') {
-            $userIsTreasurer = true;
-        }
-        
         // Return whether user is treasurer (has access)
-        return $userIsTreasurer;
+        return ($userRoleFromSession === 'treasurer');
     }
 }
 

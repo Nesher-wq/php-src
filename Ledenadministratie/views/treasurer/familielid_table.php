@@ -1,19 +1,13 @@
 <?php
-use config\Connection;
-use models\Soortlid;
-
 require_once __DIR__ . '/../../controllers/FamilielidController.php';
 require_once __DIR__ . '/../../config/connection.php';
 require_once __DIR__ . '/../../models/Soortlid.php';
 
 // Initialize database connection and controllers
-$conn = new Connection();
+$conn = new config\Connection();
 $pdo = $conn->getConnection();
 $familielidController = new \FamilielidController($pdo);
-$soortlidModel = new Soortlid();
-
-// Fetch all familieleden
-$familieleden = $familielidController->getAllFamilieleden();
+$soortlidModel = new models\Soortlid();
 
 // Fetch all familieleden first
 $familieleden_lijst = $familielidController->getAllFamilieleden();
@@ -24,8 +18,15 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Haal berekende contributies op uit session
-$berekende_contributies = $_SESSION['berekende_contributies'] ?? [];
-$geselecteerd_boekjaar = $_SESSION['geselecteerd_boekjaar'] ?? null;
+$berekende_contributies = array();
+if (isset($_SESSION['berekende_contributies'])) {
+    $berekende_contributies = $_SESSION['berekende_contributies'];
+}
+
+$geselecteerd_boekjaar = null;
+if (isset($_SESSION['geselecteerd_boekjaar'])) {
+    $geselecteerd_boekjaar = $_SESSION['geselecteerd_boekjaar'];
+}
 
 // Debug output on page if debug parameter is set
 if (isset($_GET['debug'])) {
@@ -33,7 +34,13 @@ if (isset($_GET['debug'])) {
     echo '<h4>Debug Information</h4>';
     echo '<pre>';
     echo "Session ID: " . session_id() . "\n";
-    echo "Geselecteerd boekjaar: " . ($geselecteerd_boekjaar ?? 'niet gezet') . "\n";
+    
+    $boekjaarText = 'niet gezet';
+    if ($geselecteerd_boekjaar !== null) {
+        $boekjaarText = $geselecteerd_boekjaar;
+    }
+    echo "Geselecteerd boekjaar: " . $boekjaarText . "\n";
+    
     echo "Aantal berekende contributies: " . count($berekende_contributies) . "\n";
     echo "Berekende contributies:\n";
     print_r($berekende_contributies);
@@ -53,7 +60,12 @@ if (isset($_GET['debug'])) {
         <pre><?php 
             echo "Sessie ID: " . session_id() . "\n";
             echo "Berekende contributies: " . print_r($berekende_contributies, true) . "\n";
-            echo "Geselecteerd boekjaar: " . ($geselecteerd_boekjaar ?? 'niet gezet') . "\n";
+            
+            $boekjaarDebugText = 'niet gezet';
+            if ($geselecteerd_boekjaar !== null) {
+                $boekjaarDebugText = $geselecteerd_boekjaar;
+            }
+            echo "Geselecteerd boekjaar: " . $boekjaarDebugText . "\n";
             echo "Contributies per lid: " . print_r($berekende_contributies, true);
         ?></pre>
     </div>
@@ -66,8 +78,20 @@ if (isset($_GET['debug'])) {
             <th>Geboortedatum</th>
             <th>Soort familielid</th>
             <th>Soort lid</th>
-            <th><?php echo !empty($berekende_contributies) ? 'Contributie Type' : '-'; ?></th>
-            <th><?php echo !empty($berekende_contributies) ? 'Bedrag (€)' : '-'; ?></th>
+            <th><?php 
+                $contributieHeaderText = '-';
+                if (!empty($berekende_contributies)) {
+                    $contributieHeaderText = 'Contributie Type';
+                }
+                echo $contributieHeaderText; 
+            ?></th>
+            <th><?php 
+                $bedragHeaderText = '-';
+                if (!empty($berekende_contributies)) {
+                    $bedragHeaderText = 'Bedrag (€)';
+                }
+                echo $bedragHeaderText; 
+            ?></th>
         </tr>
     </thead>
     <tbody>
@@ -105,12 +129,23 @@ if (isset($_GET['debug'])) {
         $totaal_algemeen = 0;
         
         foreach ($berekende_contributies as $contributie) {
-            if ($contributie['contributie_type'] === 'Basis') {
-                $totaal_basis += $contributie['bedrag'];
-            } elseif ($contributie['contributie_type'] === 'Stalling') {
-                $totaal_stalling += $contributie['bedrag'];
+            $contributieType = '';
+            if (isset($contributie['contributie_type'])) {
+                $contributieType = $contributie['contributie_type'];
             }
-            $totaal_algemeen += $contributie['bedrag'];
+            
+            $contributieBedrag = 0;
+            if (isset($contributie['bedrag'])) {
+                $contributieBedrag = $contributie['bedrag'];
+            }
+            
+            if ($contributieType === 'Basis') {
+                $totaal_basis = $totaal_basis + $contributieBedrag;
+            }
+            if ($contributieType === 'Stalling') {
+                $totaal_stalling = $totaal_stalling + $contributieBedrag;
+            }
+            $totaal_algemeen = $totaal_algemeen + $contributieBedrag;
         }
         ?>
         <h4>Totaal Overzicht voor <?php echo htmlspecialchars($geselecteerd_boekjaar); ?></h4>

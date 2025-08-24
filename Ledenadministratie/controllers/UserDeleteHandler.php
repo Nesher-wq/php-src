@@ -20,7 +20,7 @@ class UserDeleteHandler {
         $userIsDeletingThemselves = $this->checkIfUserIsDeletingThemselves($userToDelete);
         
         // If user is trying to delete themselves, prevent it
-        if ($userIsDeletingThemselves == true) {
+        if ($userIsDeletingThemselves) {
             return false;
         }
 
@@ -31,7 +31,7 @@ class UserDeleteHandler {
         }
         
         // Prevent deletion of admin user
-        if ($isAdminUser == true) {
+        if ($isAdminUser) {
             return false;
         }
 
@@ -63,7 +63,7 @@ class UserDeleteHandler {
         
         // If session exists, check if IDs match
         $userIsDeletingThemselves = false;
-        if ($sessionUserIdExists == true) {
+        if ($sessionUserIdExists) {
             $sessionUserId = $_SESSION['user_id'];
             $userToDeleteId = $userToDeleteData['id'];
             

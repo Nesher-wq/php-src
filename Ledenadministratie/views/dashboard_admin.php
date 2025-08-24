@@ -8,14 +8,17 @@ try {
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     error_log("Error fetching users: " . $e->getMessage());
-    $users = []; // Zorg voor een lege array als er een fout optreedt
+    $users = array(); // Zorg voor een lege array als er een fout optreedt
 }
 
 // Debug informatie (tijdelijk)
 error_log("Users fetched: " . print_r($users, true));
 
 // Get current user info to prevent self-deletion
-$currentUsername = $_SESSION['username'] ?? '';
+$currentUsername = '';
+if (isset($_SESSION['username'])) {
+    $currentUsername = $_SESSION['username'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -34,7 +37,13 @@ $currentUsername = $_SESSION['username'] ?? '';
     </nav>
     <div class="container">
         <div class="welcome-section">
-            <h2>Hallo, <?= htmlspecialchars($_SESSION['username'] ?? 'admin') ?></h2>
+            <h2>Hallo, <?php 
+                $welcomeUsername = 'admin';
+                if (isset($_SESSION['username'])) {
+                    $welcomeUsername = $_SESSION['username'];
+                }
+                echo htmlspecialchars($welcomeUsername); 
+            ?></h2>
         </div>
         
         <!-- Include users table - CORRIGEER HET PAD HIER -->

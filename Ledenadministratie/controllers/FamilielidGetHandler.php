@@ -47,7 +47,7 @@ class FamilielidGetHandler {
             }
             
             // If no familielid was found, log and return null
-            if ($familielidWasFound == false) {
+            if (!$familielidWasFound) {
                 $logMessage = "No familielid found with ID: " . $familielidIdParameter;
                 writeLog($logMessage);
                 return null;
@@ -61,7 +61,7 @@ class FamilielidGetHandler {
         }
         
         // If error occurred, return null
-        if ($databaseErrorOccurred == true) {
+        if ($databaseErrorOccurred) {
             return null;
         }
         

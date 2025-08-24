@@ -16,27 +16,27 @@ require_once __DIR__ . '/controllers/FamilielidController.php';
 require_once __DIR__ . '/models/Soortlid.php';
 
 // Create database connection and controllers
-use config\Connection;
-$database_connection = new Connection();
+$database_connection = new config\Connection();
 $database_pdo = $database_connection->getConnection();
 $user_controller = new UserController($database_pdo);
 $auth_controller = new AuthController($database_pdo);
 $familie_controller = new FamilieController($database_pdo);
 
 // Load member types and set compatibility variables for views
-$soortlid_model = new \models\Soortlid();
-$soort_leden = $soortlid_model->getAllSoortleden();
 $pdo = $database_pdo;
 $userController = $user_controller;
 $authController = $auth_controller;
-$familieController = $familie_controller;
 
 // Check if user is logged in and get role
-$user_is_logged_in = (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true);
-$current_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
+$user_is_logged_in = isset($_SESSION['loggedin']) && $_SESSION['loggedin'];
+
+$current_user_role = '';
+if (isset($_SESSION['role'])) {
+    $current_user_role = $_SESSION['role'];
+}
 
 // If user is not logged in, show login page
-if ($user_is_logged_in === false) {
+if (!$user_is_logged_in) {
     // Check for login error message
     $error_message = '';
     if (isset($_SESSION['login_error'])) {
@@ -55,11 +55,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Function to handle all POST requests
 function handlePostRequest($user_role, $familie_controller) {
-    $action = isset($_POST['action']) ? $_POST['action'] : '';
-    $handler = isset($_POST['handler']) ? $_POST['handler'] : '';
+    $action = '';
+    if (isset($_POST['action'])) {
+        $action = $_POST['action'];
+    }
+    
+    $handler = '';
+    if (isset($_POST['handler'])) {
+        $handler = $_POST['handler'];
+    }
     
     // Handle contributie (treasurer only)
-    if ($handler === 'contributie' && $user_role === 'treasurer') {
+    if ($user_role === 'treasurer' && $handler === 'contributie') {
         include __DIR__ . '/controllers/ContributieHandler.php';
         return;
     }
@@ -70,70 +77,87 @@ function handlePostRequest($user_role, $familie_controller) {
         return;
     }
     
-    // Check user permissions
-    $can_manage = ($user_role === 'secretary' || $user_role === 'admin');
+    // Check user permissions for family management
+    $can_manage_families = ($user_role === 'secretary');
     
-    // Define action arrays
-    $family_actions = array('add_family', 'edit_family', 'delete_family');
-    $member_actions = array('add_familielid', 'edit_familielid', 'delete_familielid');
-    $user_actions = array('add_user', 'edit_user', 'delete_user');
-    
-    // Handle family actions
-    if (in_array($action, $family_actions) && $can_manage) {
+    // Handle family actions (secretary only)
+    if (($action === 'add_family' || $action === 'edit_family' || $action === 'delete_family') && $can_manage_families) {
         $result = $familie_controller->handleRequest();
-        if (is_array($result) && $result['success'] && isset($result['familie'])) {
-            $GLOBALS['edit_familie'] = $result['familie'];
+        
+        // Process the result and set session messages for user feedback
+        if (isset($result['success'])) {
+            if ($result['success']) {
+                $_SESSION['message'] = $result['message'];
+                $_SESSION['message_type'] = 'success';
+            } else {
+                $_SESSION['message'] = $result['message'];
+                $_SESSION['message_type'] = 'error';
+            }
         }
-        if (isset($result['message'])) {
-            $GLOBALS['message'] = $result['message'];
-            $GLOBALS['message_type'] = $result['success'] ? 'success' : 'error';
-        }
-        return;
+        
+        // Redirect to prevent form resubmission
+        header('Location: /Ledenadministratie/index.php');
+        exit;
     }
     
-    // Handle family member actions  
-    if (in_array($action, $member_actions) && $can_manage) {
+    // Handle family member actions (secretary only)
+    if (($action === 'add_familielid' || $action === 'edit_familielid' || $action === 'delete_familielid') && $can_manage_families) {
         include __DIR__ . '/controllers/FamilielidHandler.php';
         return;
     }
     
     // Handle user management (admin only)
-    if (in_array($action, $user_actions)) {
+    if ($action === 'add_user' || $action === 'edit_user' || $action === 'delete_user') {
         if ($user_role === 'admin') {
             include __DIR__ . '/controllers/UserHandler.php';
         } else {
             http_response_code(403);
-            echo "Access denied.";
+            echo "Toegang geweigerd.";
             exit;
         }
     }
 }
 
 // Handle change password page request (GET)
-if (isset($_GET['action']) && $_GET['action'] === 'change_password') {
+$get_action = '';
+if (isset($_GET['action'])) {
+    $get_action = $_GET['action'];
+}
+
+if ($get_action === 'change_password') {
     include __DIR__ . '/views/change_password.php';
     exit;
 }
 
 // Handle logout action
-if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+if ($get_action === 'logout') {
     session_destroy();
     header('Location: /Ledenadministratie/views/login.php');
     exit;
 }
 
-// Show the correct dashboard based on user role
-$dashboards = array(
-    'admin' => '/views/dashboard_admin.php',
-    'treasurer' => '/views/dashboard_treasurer.php', 
-    'secretary' => '/views/dashboard_secretary.php'
-);
+// Check for session messages and set variables for dashboard display
+$message = '';
+$message_type = '';
+if (isset($_SESSION['message'])) {
+    $message = $_SESSION['message'];
+    unset($_SESSION['message']); // Clear the message after displaying
+}
+if (isset($_SESSION['message_type'])) {
+    $message_type = $_SESSION['message_type'];
+    unset($_SESSION['message_type']); // Clear the message type after displaying
+}
 
-if (isset($dashboards[$current_user_role])) {
-    include __DIR__ . $dashboards[$current_user_role];
+// Show the correct dashboard based on user role
+if ($current_user_role === 'admin') {
+    include __DIR__ . '/views/dashboard_admin.php';
+} elseif ($current_user_role === 'treasurer') {
+    include __DIR__ . '/views/dashboard_treasurer.php';
+} elseif ($current_user_role === 'secretary') {
+    include __DIR__ . '/views/dashboard_secretary.php';
 } else {
     http_response_code(403);
-    echo "Access denied.";
+    echo "Toegang geweigerd.";
     exit;
 }
 ?>

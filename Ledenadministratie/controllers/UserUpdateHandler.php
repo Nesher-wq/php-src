@@ -23,7 +23,7 @@ class UserUpdateHandler {
         }
         
         // Handle admin user update differently
-        if ($isAdminUser == true) {
+        if ($isAdminUser) {
             $adminUpdateResult = $this->updateAdminUser($userIdParameter, $passwordParameter, $descriptionParameter);
             return $adminUpdateResult;
         }
@@ -32,7 +32,7 @@ class UserUpdateHandler {
         $usernameConflictExists = $this->checkUsernameConflict($usernameParameter, $userIdParameter);
         
         // If username conflict exists, return false
-        if ($usernameConflictExists == true) {
+        if ($usernameConflictExists) {
             return false;
         }
 
@@ -43,7 +43,7 @@ class UserUpdateHandler {
         }
         
         // Update user with or without password
-        if ($passwordIsProvided == false) {
+        if (!$passwordIsProvided) {
             $updateResult = $this->updateUserWithoutPassword($userIdParameter, $usernameParameter, $roleParameter, $descriptionParameter);
         } else {
             $updateResult = $this->updateUserWithPassword($userIdParameter, $usernameParameter, $passwordParameter, $roleParameter, $descriptionParameter);
@@ -73,7 +73,7 @@ class UserUpdateHandler {
         }
         
         // Update admin with or without password
-        if ($passwordIsProvided == true) {
+        if ($passwordIsProvided) {
             // Hash the new password
             $hashedPasswordForStorage = password_hash($passwordParameter, PASSWORD_DEFAULT);
             

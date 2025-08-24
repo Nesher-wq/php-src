@@ -9,7 +9,7 @@
 <body>
     <div class="login-container">
         <h2>Inloggen</h2>
-        <?php if (isset($error_message)): ?>
+        <?php if (isset($error_message) && !empty(trim($error_message))): ?>
             <div class="message error">
                 <?= htmlspecialchars($error_message) ?>
             </div>

@@ -2,17 +2,36 @@
 
 // This class handles deleting familieleden from the database
 class FamilielidDeleteHandler {
-    // This variable stores our database connection
+    // These variables store our database connection and controller objects
     public $databaseConnection;
+    public $familieControllerObject;
+    public $familielidControllerObject;
     
     // Constructor function that runs when we create a new FamilielidDeleteHandler
-    public function __construct($databaseConnectionParameter) {
+    public function __construct($databaseConnectionParameter, $familieController = null, $familielidController = null) {
         // Store the database connection for later use
         $this->databaseConnection = $databaseConnectionParameter;
+        
+        // Store controller objects if provided (for request handling)
+        if ($familieController !== null) {
+            $this->familieControllerObject = $familieController;
+        }
+        if ($familielidController !== null) {
+            $this->familielidControllerObject = $familielidController;
+        }
     }
 
-    // This function deletes a familielid from the database
+    // This function deletes a familielid from the database (simple version for controller use)
     public function deleteFamilielid($familielidIdParameter) {
+        // Use the private method to perform the actual delete
+        $deleteWasSuccessful = $this->executeDatabaseDelete($familielidIdParameter);
+        
+        // Return whether the delete was successful
+        return $deleteWasSuccessful;
+    }
+    
+    // Private method that performs the actual database delete operation
+    private function executeDatabaseDelete($familielidIdParameter) {
         // Prepare the delete statement
         $deleteFamilielidStatement = $this->databaseConnection->prepare("DELETE FROM familielid WHERE id = ?");
         
@@ -31,5 +50,51 @@ class FamilielidDeleteHandler {
         
         // Return whether the delete was successful
         return $deleteWasSuccessful;
+    }
+    
+    // This function handles full delete requests (from forms)
+    public function handleDeleteFamilielidRequest() {
+        // Get familie ID from form
+        $familieIdFromForm = '';
+        if (isset($_POST['familie_id'])) {
+            $familieIdFromForm = $_POST['familie_id'];
+        }
+        
+        // Get familielid ID to delete
+        $deleteFamilielidId = '';
+        if (isset($_POST['delete_familielid_id'])) {
+            $deleteFamilielidId = $_POST['delete_familielid_id'];
+        }
+        
+        // Try to delete the familielid using our private method
+        $deleteWasSuccessful = $this->executeDatabaseDelete($deleteFamilielidId);
+        
+        // Set appropriate message and reload familie
+        if ($deleteWasSuccessful) {
+            $successMessage = "Familielid succesvol verwijderd.";
+            $messageType = "success";
+            
+            // Reload familie for edit screen (if controllers are available)
+            $editFamilie = null;
+            if ($this->familieControllerObject !== null) {
+                $editFamilie = $this->familieControllerObject->getFamilieById($familieIdFromForm);
+            }
+            
+            return array(
+                'success' => true,
+                'message' => $successMessage,
+                'message_type' => $messageType,
+                'edit_familie' => $editFamilie
+            );
+        } else {
+            $errorMessage = "Fout bij het verwijderen van het familielid.";
+            $messageType = "error";
+            
+            return array(
+                'success' => false,
+                'message' => $errorMessage,
+                'message_type' => $messageType
+            );
+        }
     }
 }

@@ -6,29 +6,17 @@
 global $pdo;
 
 // First check if this is a POST request with the correct action
-$requestIsPostMethod = false;
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $requestIsPostMethod = true;
-}
+$requestIsPostMethod = ($_SERVER['REQUEST_METHOD'] === 'POST');
 
-$actionParameterExists = false;
+$actionParameterExists = isset($_POST['action']);
 $actionIsCorrect = false;
-if (isset($_POST['action'])) {
-    $actionParameterExists = true;
+if ($actionParameterExists) {
     $actionFromPost = $_POST['action'];
-    
-    if ($actionFromPost === 'bereken_contributies') {
-        $actionIsCorrect = true;
-    }
+    $actionIsCorrect = ($actionFromPost === 'bereken_contributies');
 }
 
 // Only process if this is the correct POST request
-$shouldProcessRequest = false;
-if ($requestIsPostMethod == true && $actionParameterExists == true && $actionIsCorrect == true) {
-    $shouldProcessRequest = true;
-}
-
-if ($shouldProcessRequest == true) {
+if ($requestIsPostMethod && $actionParameterExists && $actionIsCorrect) {
     // Include the ContributieController
     require_once __DIR__ . '/ContributieController.php';
     
@@ -39,7 +27,7 @@ if ($shouldProcessRequest == true) {
     $userHasAccess = $contributieControllerObject->validateAccess($_SESSION);
     
     // If user doesn't have access, show error message
-    if ($userHasAccess == false) {
+    if (!$userHasAccess) {
         $_SESSION['message'] = 'Geen toegang tot contributie berekening.';
         $_SESSION['message_type'] = 'error';
         return;
@@ -47,38 +35,26 @@ if ($shouldProcessRequest == true) {
     
     // Get the boekjaar from POST data
     $boekjaarFromForm = null;
-    $boekjaarParameterExists = false;
     if (isset($_POST['boekjaar'])) {
-        $boekjaarParameterExists = true;
         $boekjaarFromForm = $_POST['boekjaar'];
     }
     
     // Check if boekjaar was provided
-    $boekjaarIsEmpty = false;
-    if ($boekjaarFromForm == null) {
-        $boekjaarIsEmpty = true;
-    }
-    if ($boekjaarFromForm == '') {
-        $boekjaarIsEmpty = true;
-    }
+    $boekjaarIsEmpty = ($boekjaarFromForm == null || $boekjaarFromForm == '');
     
     // If no boekjaar was selected, show error
-    if ($boekjaarIsEmpty == true) {
+    if ($boekjaarIsEmpty) {
         $_SESSION['message'] = 'Geen boekjaar geselecteerd.';
         $_SESSION['message_type'] = 'error';
         return;
     }
     
     // Clear previous session data before new calculation
-    $previousContributiesExist = false;
     if (isset($_SESSION['berekende_contributies'])) {
-        $previousContributiesExist = true;
         unset($_SESSION['berekende_contributies']);
     }
     
-    $previousBoekjaarExists = false;
     if (isset($_SESSION['geselecteerd_boekjaar'])) {
-        $previousBoekjaarExists = true;
         unset($_SESSION['geselecteerd_boekjaar']);
     }
     
@@ -86,15 +62,10 @@ if ($shouldProcessRequest == true) {
     $calculationResult = $contributieControllerObject->berekenContributies($boekjaarFromForm);
     
     // Check if calculation was successful
-    $calculationWasSuccessful = false;
-    if (isset($calculationResult['success'])) {
-        if ($calculationResult['success'] == true) {
-            $calculationWasSuccessful = true;
-        }
-    }
+    $calculationWasSuccessful = (isset($calculationResult['success']) && $calculationResult['success']);
     
     // Handle successful calculation
-    if ($calculationWasSuccessful == true) {
+    if ($calculationWasSuccessful) {
         // Store the calculated contributions in session
         if (isset($calculationResult['contributies'])) {
             $_SESSION['berekende_contributies'] = $calculationResult['contributies'];
@@ -113,7 +84,7 @@ if ($shouldProcessRequest == true) {
     }
     
     // Handle failed calculation
-    if ($calculationWasSuccessful == false) {
+    if (!$calculationWasSuccessful) {
         // Set error message
         $errorMessageText = 'Fout bij berekenen contributies: ';
         if (isset($calculationResult['error'])) {

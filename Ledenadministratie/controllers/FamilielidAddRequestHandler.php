@@ -51,12 +51,12 @@ class FamilielidAddRequestHandler {
         
         // Check if creation was successful
         $createWasSuccessful = false;
-        if ($createResult == true) {
+        if ($createResult) {
             $createWasSuccessful = true;
         }
         
         // Set appropriate message
-        if ($createWasSuccessful == true) {
+        if ($createWasSuccessful) {
             $successMessage = "Familielid succesvol toegevoegd.";
             $messageType = "success";
             

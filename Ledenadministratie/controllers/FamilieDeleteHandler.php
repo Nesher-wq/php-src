@@ -3,8 +3,6 @@
 require_once __DIR__ . '/../models/Familie.php';
 require_once __DIR__ . '/../includes/utils.php';
 
-use models\Familie;
-
 // This class handles deleting families from the database
 class FamilieDeleteHandler {
     // This variable stores our Familie model object
@@ -13,7 +11,7 @@ class FamilieDeleteHandler {
     // Constructor function that runs when we create a new FamilieDeleteHandler
     public function __construct($databaseConnection) {
         // Create a new Familie model object and store it
-        $this->familieModelObject = new Familie($databaseConnection);
+        $this->familieModelObject = new models\Familie($databaseConnection);
     }
     
     // This is the main function that handles delete requests for families
@@ -25,7 +23,7 @@ class FamilieDeleteHandler {
         }
         
         // If the delete button was clicked, we try to delete the familie
-        if ($deleteButtonWasClicked == true) {
+        if ($deleteButtonWasClicked) {
             $deleteResult = $this->deleteFamilieFromDatabase();
             return $deleteResult;
         }
@@ -51,7 +49,7 @@ class FamilieDeleteHandler {
         }
         
         // If we didn't find it yet, check the familie_id field
-        if ($familieIdFound == false) {
+        if (!$familieIdFound) {
             if (isset($_POST['familie_id'])) {
                 $familieIdToDelete = $_POST['familie_id'];
                 $familieIdFound = true;
@@ -65,7 +63,7 @@ class FamilieDeleteHandler {
         }
         
         // If no familie ID was provided, we can't delete anything
-        if ($familieIdIsEmpty == true) {
+        if ($familieIdIsEmpty) {
             $noIdErrorMessage = "Geen familie ID opgegeven voor verwijdering.";
             $noIdErrorArray = array();
             $noIdErrorArray['success'] = false;
@@ -78,12 +76,12 @@ class FamilieDeleteHandler {
         
         // Check if the delete operation was successful
         $deleteWasSuccessful = false;
-        if ($deleteOperationResult == true) {
+        if ($deleteOperationResult) {
             $deleteWasSuccessful = true;
         }
         
         // If delete was successful, return success message
-        if ($deleteWasSuccessful == true) {
+        if ($deleteWasSuccessful) {
             $successMessageText = "Familie succesvol verwijderd.";
             $successResultArray = array();
             $successResultArray['success'] = true;

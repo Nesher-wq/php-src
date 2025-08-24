@@ -28,7 +28,7 @@ class FamilielidEditRequestHandler {
             $bothIdsProvided = true;
         }
         
-        if ($bothIdsProvided == true) {
+        if ($bothIdsProvided) {
             // Get familielid data
             $editFamilielidData = $this->familielidControllerObject->getFamilielidById($editFamilielidId);
             
@@ -47,7 +47,7 @@ class FamilielidEditRequestHandler {
             }
             
             // If both data sets exist, return them
-            if ($familielidDataExists == true && $familieDataExists == true) {
+            if ($familielidDataExists && $familieDataExists) {
                 return array(
                     'success' => true,
                     'edit_familielid' => $editFamilielidData,
@@ -124,12 +124,12 @@ class FamilielidEditRequestHandler {
         
         // Check if update was successful
         $updateWasSuccessful = false;
-        if ($updateResult == true) {
+        if ($updateResult) {
             $updateWasSuccessful = true;
         }
         
         // Set appropriate message and reload familie
-        if ($updateWasSuccessful == true) {
+        if ($updateWasSuccessful) {
             $successMessage = "Familielid succesvol bijgewerkt.";
             $messageType = "success";
             

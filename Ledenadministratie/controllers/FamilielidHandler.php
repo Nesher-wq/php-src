@@ -6,7 +6,7 @@ if (defined('INCLUDED_FROM_INDEX')) {
 }
 
 // If direct access is attempted, deny it
-if ($accessIsAllowed == false) {
+if (!$accessIsAllowed) {
     http_response_code(403);
     exit('Direct access not allowed.');
 }
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Only continue if this is a POST request
-if ($requestMethodIsPost == false) {
+if (!$requestMethodIsPost) {
     return;
 }
 
@@ -33,7 +33,7 @@ require_once __DIR__ . '/FamilieController.php';
 require_once __DIR__ . '/FamilielidController.php';
 require_once __DIR__ . '/FamilielidAddRequestHandler.php';
 require_once __DIR__ . '/FamilielidEditRequestHandler.php';
-require_once __DIR__ . '/FamilielidDeleteRequestHandler.php';
+require_once __DIR__ . '/FamilielidDeleteHandler.php';
 
 // Create controller objects
 $familieControllerObject = new FamilieController($pdo);
@@ -42,7 +42,7 @@ $familielidControllerObject = new FamilielidController($pdo);
 // Create handler objects
 $addRequestHandlerObject = new FamilielidAddRequestHandler($familieControllerObject, $familielidControllerObject);
 $editRequestHandlerObject = new FamilielidEditRequestHandler($familieControllerObject, $familielidControllerObject);
-$deleteRequestHandlerObject = new FamilielidDeleteRequestHandler($familieControllerObject, $familielidControllerObject);
+$deleteRequestHandlerObject = new FamilielidDeleteHandler($pdo, $familieControllerObject, $familielidControllerObject);
 
 // Initialize result variables
 $handlerResult = null;
@@ -58,7 +58,7 @@ if (isset($_POST['add_familielid'])) {
 }
 
 // Handle add familielid request
-if ($addFamilielidButtonClicked == true) {
+if ($addFamilielidButtonClicked) {
     $handlerResult = $addRequestHandlerObject->handleAddFamilielidRequest();
     
     // Extract results from handler
@@ -80,7 +80,7 @@ if (isset($_POST['edit_familielid'])) {
 }
 
 // Handle edit familielid form request
-if ($editFamilielidButtonClicked == true) {
+if ($editFamilielidButtonClicked) {
     $handlerResult = $editRequestHandlerObject->handleEditFamilielidFormRequest();
     
     // Extract results from handler
@@ -105,7 +105,7 @@ if (isset($_POST['update_familielid'])) {
 }
 
 // Handle update familielid request
-if ($updateFamilielidButtonClicked == true) {
+if ($updateFamilielidButtonClicked) {
     $handlerResult = $editRequestHandlerObject->handleUpdateFamilielidRequest();
     
     // Extract results from handler
@@ -120,7 +120,7 @@ if ($updateFamilielidButtonClicked == true) {
     }
     
     // Clear edit familielid if requested
-    if (isset($handlerResult['clear_edit_familielid']) && $handlerResult['clear_edit_familielid'] == true) {
+    if (isset($handlerResult['clear_edit_familielid']) && $handlerResult['clear_edit_familielid']) {
         unset($edit_familielid);
     }
 }
@@ -132,7 +132,7 @@ if (isset($_POST['cancel_edit_familielid'])) {
 }
 
 // Handle cancel edit familielid request
-if ($cancelEditFamilielidButtonClicked == true) {
+if ($cancelEditFamilielidButtonClicked) {
     $handlerResult = $editRequestHandlerObject->handleCancelEditFamilielidRequest();
     
     // Extract results from handler
@@ -141,7 +141,7 @@ if ($cancelEditFamilielidButtonClicked == true) {
     }
     
     // Clear edit familielid
-    if (isset($handlerResult['clear_edit_familielid']) && $handlerResult['clear_edit_familielid'] == true) {
+    if (isset($handlerResult['clear_edit_familielid']) && $handlerResult['clear_edit_familielid']) {
         unset($edit_familielid);
     }
 }
@@ -153,7 +153,7 @@ if (isset($_POST['delete_familielid'])) {
 }
 
 // Handle delete familielid request
-if ($deleteFamilielidButtonClicked == true) {
+if ($deleteFamilielidButtonClicked) {
     $handlerResult = $deleteRequestHandlerObject->handleDeleteFamilielidRequest();
     
     // Extract results from handler

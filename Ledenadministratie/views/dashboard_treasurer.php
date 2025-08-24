@@ -11,9 +11,8 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // Dashboard voor penningmeester
 require_once __DIR__ . '/../models/Boekjaar.php';
-use models\Boekjaar;
 
-$boekjaarModel = new Boekjaar();
+$boekjaarModel = new models\Boekjaar();
 $boekjaren = $boekjaarModel->getAllBoekjaren();
 ?>
 <!DOCTYPE html>
@@ -53,7 +52,18 @@ $boekjaren = $boekjaarModel->getAllBoekjaren();
                     <option value="">Selecteer boekjaar...</option>
                     <?php foreach ($boekjaren as $boekjaar): ?>
                         <option value="<?php echo htmlspecialchars($boekjaar->jaar); ?>" 
-                                <?php echo (isset($_SESSION['geselecteerd_boekjaar']) && $_SESSION['geselecteerd_boekjaar'] == $boekjaar->jaar) ? 'selected' : ''; ?>>
+                                <?php 
+                                $isSelected = false;
+                                if (isset($_SESSION['geselecteerd_boekjaar'])) {
+                                    if ($_SESSION['geselecteerd_boekjaar'] == $boekjaar->jaar) {
+                                        $isSelected = true;
+                                    }
+                                }
+                                
+                                if ($isSelected) {
+                                    echo 'selected';
+                                }
+                                ?>>
                             <?php echo htmlspecialchars($boekjaar->jaar); ?>
                         </option>
                     <?php endforeach; ?>

@@ -28,11 +28,11 @@ if (isset($_GET['action'])) {
 }
 
 // If all conditions are met, show change password page
-if ($scriptFilenameIsIndex == true && $actionParameterExists == true && $actionIsChangePassword == true) {
+if ($scriptFilenameIsIndex && $actionParameterExists && $actionIsChangePassword) {
     $accessChangePasswordPage = true;
 }
 
-if ($accessChangePasswordPage == true) {
+if ($accessChangePasswordPage) {
     include __DIR__ . '/../views/change_password.php';
     exit;
 }
@@ -53,12 +53,12 @@ if (isset($_POST['change_password'])) {
 }
 
 // If both conditions are met, this is a password change request
-if ($requestMethodIsPost == true && $changePasswordButtonClicked == true) {
+if ($requestMethodIsPost && $changePasswordButtonClicked) {
     $passwordChangePostRequest = true;
 }
 
 // Handle password change POST request
-if ($passwordChangePostRequest == true) {
+if ($passwordChangePostRequest) {
     // Get form data
     $currentPasswordFromForm = '';
     $newPasswordFromForm = '';
@@ -92,11 +92,11 @@ if ($passwordChangePostRequest == true) {
     
     // Check if current password is incorrect
     $currentPasswordIsIncorrect = false;
-    if ($currentPasswordIsCorrect == false) {
+    if (!$currentPasswordIsCorrect) {
         $currentPasswordIsIncorrect = true;
     }
     
-    if ($currentPasswordIsIncorrect == true) {
+    if ($currentPasswordIsIncorrect) {
         $message = 'Huidig wachtwoord is onjuist.';
         $message_type = 'error';
     } else {
@@ -107,7 +107,7 @@ if ($passwordChangePostRequest == true) {
             $newPasswordIsTooShort = true;
         }
         
-        if ($newPasswordIsTooShort == true) {
+        if ($newPasswordIsTooShort) {
             $message = 'Nieuw wachtwoord moet minimaal 6 tekens zijn.';
             $message_type = 'error';
         } else {
@@ -117,7 +117,7 @@ if ($passwordChangePostRequest == true) {
                 $passwordsDoNotMatch = true;
             }
             
-            if ($passwordsDoNotMatch == true) {
+            if ($passwordsDoNotMatch) {
                 $message = 'Nieuw wachtwoord en bevestiging komen niet overeen.';
                 $message_type = 'error';
             } else {
@@ -140,11 +140,11 @@ if ($passwordChangePostRequest == true) {
                 
                 // Check if update was successful
                 $updateWasSuccessful = false;
-                if ($updateResult == true) {
+                if ($updateResult) {
                     $updateWasSuccessful = true;
                 }
                 
-                if ($updateWasSuccessful == true) {
+                if ($updateWasSuccessful) {
                     $message = 'Wachtwoord succesvol gewijzigd.';
                     $message_type = 'success';
                     $passwordChangeSuccessful = true;

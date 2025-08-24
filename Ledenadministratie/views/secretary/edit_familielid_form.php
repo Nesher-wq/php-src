@@ -24,7 +24,13 @@ if (!defined('INCLUDED_FROM_INDEX')) {
     </div>
     <div class="form-group">
         <label for="stalling">Stalling (aantal boten, 0-3):</label>
-        <input type="number" id="stalling" name="stalling" min="0" max="3" value="<?php echo htmlspecialchars($edit_familielid['stalling'] ?? 0); ?>" required>
+        <input type="number" id="stalling" name="stalling" min="0" max="3" value="<?php 
+            $stallingValue = 0;
+            if (isset($edit_familielid['stalling'])) {
+                $stallingValue = $edit_familielid['stalling'];
+            }
+            echo htmlspecialchars($stallingValue); 
+        ?>" required>
     </div>
     <button type="submit" name="update_familielid" class="btn">Bijwerken</button>
     <button type="submit" name="cancel_edit_familielid" class="btn btn-secondary">Annuleren</button>

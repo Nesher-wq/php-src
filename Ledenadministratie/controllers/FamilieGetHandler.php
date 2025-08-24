@@ -3,8 +3,6 @@
 require_once __DIR__ . '/../models/Familie.php';
 require_once __DIR__ . '/../includes/utils.php';
 
-use models\Familie;
-
 // This class handles getting families from the database
 class FamilieGetHandler {
     // This variable stores our Familie model object
@@ -13,7 +11,7 @@ class FamilieGetHandler {
     // Constructor function that runs when we create a new FamilieGetHandler
     public function __construct($databaseConnection) {
         // Create a new Familie model object and store it
-        $this->familieModelObject = new Familie($databaseConnection);
+        $this->familieModelObject = new models\Familie($databaseConnection);
     }
     
     // This function gets a specific familie by its ID
@@ -34,15 +32,15 @@ class FamilieGetHandler {
         
         // If the ID is empty or null, we can't get the familie
         $familieIdIsInvalid = false;
-        if ($familieIdIsEmpty == true) {
+        if ($familieIdIsEmpty) {
             $familieIdIsInvalid = true;
         }
-        if ($familieIdIsNull == true) {
+        if ($familieIdIsNull) {
             $familieIdIsInvalid = true;
         }
         
         // Return error if ID is invalid
-        if ($familieIdIsInvalid == true) {
+        if ($familieIdIsInvalid) {
             $noIdErrorMessage = "No valid familie ID provided";
             $noIdErrorArray = array();
             $noIdErrorArray['success'] = false;
@@ -67,7 +65,7 @@ class FamilieGetHandler {
         }
         
         // If a database error occurred, return error
-        if ($databaseErrorOccurred == true) {
+        if ($databaseErrorOccurred) {
             $databaseErrorMessage = "Database error while getting familie";
             $databaseErrorArray = array();
             $databaseErrorArray['success'] = false;
@@ -82,7 +80,7 @@ class FamilieGetHandler {
         }
         
         // If we got data, return it
-        if ($familieDataIsNull == false) {
+        if (!$familieDataIsNull) {
             return $familieDataFromDatabase;
         }
         

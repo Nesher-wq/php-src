@@ -3,9 +3,6 @@ if (!defined('INCLUDED_FROM_INDEX')) {
     http_response_code(403);
     exit('Direct access not allowed.');
 }
-
-$locale = 'nl_NL'; // Hardcoded locale for simplicity
-$dateFormat = ($locale === 'nl_NL') ? 'dd-mm-yyyy' : 'mm/dd/yyyy';
 ?>
 <div class="form-container">
     <h4>Nieuw familielid toevoegen</h4>

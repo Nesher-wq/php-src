@@ -17,7 +17,7 @@ class UserCreateHandler {
         $usernameExistsCheckResult = $this->checkIfUsernameExists($usernameParameter);
         
         // If username already exists, return false
-        if ($usernameExistsCheckResult == true) {
+        if ($usernameExistsCheckResult) {
             return false;
         }
         
@@ -35,7 +35,7 @@ class UserCreateHandler {
         
         // Check if the insert was successful
         $insertWasSuccessful = false;
-        if ($insertResult == true) {
+        if ($insertResult) {
             // Check how many rows were affected
             $rowsAffected = $insertUserStatement->rowCount();
             if ($rowsAffected > 0) {

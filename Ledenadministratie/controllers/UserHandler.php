@@ -24,11 +24,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Only continue if user is admin and request is POST
 $shouldProcessRequest = false;
-if ($userIsAdmin == true && $requestMethodIsPost == true) {
+if ($userIsAdmin && $requestMethodIsPost) {
     $shouldProcessRequest = true;
 }
 
-if ($shouldProcessRequest == false) {
+if (!$shouldProcessRequest) {
     return;
 }
 
@@ -51,7 +51,7 @@ if ($actionFromPost === 'add_user') {
 }
 
 // Handle add user action
-if ($actionIsAddUser == true) {
+if ($actionIsAddUser) {
     // Get form data for creating user
     $usernameFromForm = '';
     if (isset($_POST['username'])) {
@@ -83,12 +83,12 @@ if ($actionIsAddUser == true) {
     
     // Check if creation was successful
     $createWasSuccessful = false;
-    if ($createUserResult == true) {
+    if ($createUserResult) {
         $createWasSuccessful = true;
     }
     
     // Set appropriate message
-    if ($createWasSuccessful == true) {
+    if ($createWasSuccessful) {
         $message = "Gebruiker succesvol aangemaakt.";
         $message_type = "success";
     } else {
@@ -104,7 +104,7 @@ if ($actionFromPost === 'edit_user') {
 }
 
 // Handle edit user action
-if ($actionIsEditUser == true) {
+if ($actionIsEditUser) {
     // Get form data for updating user
     $userIdFromForm = '';
     if (isset($_POST['user_id'])) {
@@ -142,12 +142,12 @@ if ($actionIsEditUser == true) {
     
     // Check if update was successful
     $updateWasSuccessful = false;
-    if ($updateUserResult == true) {
+    if ($updateUserResult) {
         $updateWasSuccessful = true;
     }
     
     // Set appropriate message
-    if ($updateWasSuccessful == true) {
+    if ($updateWasSuccessful) {
         $message = "Gebruiker succesvol bijgewerkt.";
         $message_type = "success";
     } else {
@@ -163,7 +163,7 @@ if ($actionFromPost === 'delete_user') {
 }
 
 // Handle delete user action
-if ($actionIsDeleteUser == true) {
+if ($actionIsDeleteUser) {
     // Get user ID to delete
     $userIdToDelete = '';
     if (isset($_POST['user_id'])) {
@@ -190,14 +190,14 @@ if ($actionIsDeleteUser == true) {
     }
     
     // Check if user is trying to delete themselves by ID
-    if ($currentUserIdExists == true) {
+    if ($currentUserIdExists) {
         if ($userIdToDelete == $currentUserIdFromSession) {
             $userCanDeleteThisUser = false;
         }
     }
     
     // Check by username if user_id not available in session
-    if ($currentUserIdExists == false && $currentUsernameExists == true) {
+    if (!$currentUserIdExists && $currentUsernameExists) {
         // Get user data for the user to delete
         $userToDeleteData = $userController->getUserById($userIdToDelete);
         
@@ -211,24 +211,24 @@ if ($actionIsDeleteUser == true) {
             }
         }
         
-        if ($usernamesMatch == true) {
+        if ($usernamesMatch) {
             $userCanDeleteThisUser = false;
         }
     }
     
     // Proceed with deletion if allowed
-    if ($userCanDeleteThisUser == true) {
+    if ($userCanDeleteThisUser) {
         // Try to delete the user
         $deleteUserResult = $userController->deleteUser($userIdToDelete);
         
         // Check if deletion was successful
         $deleteWasSuccessful = false;
-        if ($deleteUserResult == true) {
+        if ($deleteUserResult) {
             $deleteWasSuccessful = true;
         }
         
         // Set appropriate message
-        if ($deleteWasSuccessful == true) {
+        if ($deleteWasSuccessful) {
             $message = "Gebruiker succesvol verwijderd.";
             $message_type = "success";
         } else {

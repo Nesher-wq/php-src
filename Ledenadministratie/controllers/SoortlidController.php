@@ -50,7 +50,7 @@ class SoortlidController {
         }
         
         // If no date was provided, use current date
-        if ($datumWasProvided == false) {
+        if (!$datumWasProvided) {
             $dateToUseForCalculation = date('Y-m-d');
         }
 
@@ -66,7 +66,7 @@ class SoortlidController {
             $soortlidWasFound = true;
         }
         
-        if ($soortlidWasFound == false) {
+        if (!$soortlidWasFound) {
             return null;
         }
 
