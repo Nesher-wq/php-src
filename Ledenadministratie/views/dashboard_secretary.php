@@ -25,7 +25,7 @@ if (!defined('INCLUDED_FROM_INDEX')) {
         <div class="welcome-section">
             <h2>Hallo, <?php echo htmlspecialchars($_SESSION['username']); ?></h2>
         </div>
-        <?php if (isset($message)): ?>
+        <?php if (isset($message) && !empty(trim($message))): ?>
             <div class="message <?php echo $message_type; ?>">
                 <?php echo htmlspecialchars($message); ?>
             </div>

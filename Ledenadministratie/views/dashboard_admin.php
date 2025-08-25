@@ -11,9 +11,6 @@ try {
     $users = array(); // Zorg voor een lege array als er een fout optreedt
 }
 
-// Debug informatie (tijdelijk)
-error_log("Users fetched: " . print_r($users, true));
-
 // Get current user info to prevent self-deletion
 $currentUsername = '';
 if (isset($_SESSION['username'])) {

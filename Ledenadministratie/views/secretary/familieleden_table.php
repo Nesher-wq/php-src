@@ -11,17 +11,31 @@
     </thead>
     <tbody>
         <?php 
-        $editFamilieExists = false;
-        $editFamilieIsArray = false;
-        $familieLedenExist = false;
-        $familieLedenIsArray = false;
+        // Initialize validation flags to safely check data structure
+        // These flags help us verify the data exists and is in the expected format
+        // before attempting to display familieleden information
+        $editFamilieExists = false;      // Check if $edit_familie variable exists
+        $editFamilieIsArray = false;     // Check if $edit_familie is an array (not null/string/etc)
+        $familieLedenExist = false;      // Check if 'familieleden' key exists in the array
+        $familieLedenIsArray = false;    // Check if 'familieleden' value is actually an array
         
+        // Step 1: Check if the main $edit_familie variable exists
+        // This variable is set when a family is being edited and contains family data
         if (isset($edit_familie)) {
             $editFamilieExists = true;
+            
+            // Step 2: Verify that $edit_familie is an array (contains structured data)
+            // We need this to be an array so we can safely access array keys
             if (is_array($edit_familie)) {
                 $editFamilieIsArray = true;
+                
+                // Step 3: Check if the 'familieleden' key exists in the familie array
+                // This key should contain all family members for the selected family
                 if (isset($edit_familie['familieleden'])) {
                     $familieLedenExist = true;
+                    
+                    // Step 4: Verify that 'familieleden' is an array of family members
+                    // We need this to be an array so we can loop through each familielid
                     if (is_array($edit_familie['familieleden'])) {
                         $familieLedenIsArray = true;
                     }
@@ -29,6 +43,8 @@
             }
         }
         
+        // Final validation: Only show familieleden table if ALL conditions are met
+        // This prevents errors when trying to loop through invalid or missing data
         $shouldShowFamilieleden = false;
         if ($editFamilieExists && $editFamilieIsArray && $familieLedenExist && $familieLedenIsArray) {
             $shouldShowFamilieleden = true;

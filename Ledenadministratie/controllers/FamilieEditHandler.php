@@ -69,11 +69,21 @@ class FamilieEditHandler {
             // Try to get the familie data from the database
             $familieDataFromDatabase = $this->getFamilieById($familieIdToEdit);
             
-            // Create the return array with the familie data
-            $successResultArray = array();
-            $successResultArray['success'] = true;
-            $successResultArray['familie'] = $familieDataFromDatabase;
-            return $successResultArray;
+            // Check if we actually got familie data
+            if ($familieDataFromDatabase !== null) {
+                // Create the return array with the familie data
+                $successResultArray = array();
+                $successResultArray['success'] = true;
+                $successResultArray['familie'] = $familieDataFromDatabase;
+                return $successResultArray;
+            } else {
+                // Familie not found or database error
+                $notFoundErrorMessage = "Familie not found or database error";
+                $notFoundErrorArray = array();
+                $notFoundErrorArray['success'] = false;
+                $notFoundErrorArray['message'] = $notFoundErrorMessage;
+                return $notFoundErrorArray;
+            }
         }
         
         // If we get here, no valid ID was provided

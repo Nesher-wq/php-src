@@ -15,7 +15,7 @@ class AuthController {
     public function login($usernameParameter, $passwordParameter) {
         // Use a try-catch block to handle any database errors
         $databaseErrorOccurred = false;
-        $loginResult = false;
+        $resultArray = array();
         
         try {
             // Prepare a database query to find the user by username
@@ -32,9 +32,11 @@ class AuthController {
                 $userWasFound = true;
             }
             
-            // If no user was found, return false
+            // If no user was found, return error result
             if (!$userWasFound) {
-                return false;
+                $resultArray['success'] = false;
+                $resultArray['message'] = 'Ongeldige gebruikersnaam of wachtwoord.';
+                return $resultArray;
             }
 
             // First try to verify password as if it's already hashed
@@ -43,7 +45,9 @@ class AuthController {
             // If hashed password verification worked, login is successful
             if ($passwordIsCorrectHashed) {
                 $this->setSessionVariablesForUser($userDataFromDatabase);
-                return true;
+                $resultArray['success'] = true;
+                $resultArray['message'] = 'Succesvol ingelogd.';
+                return $resultArray;
             }
             
             // If hashed verification failed, check if it's a plain text password
@@ -76,11 +80,15 @@ class AuthController {
                 
                 // Set session variables for successful login
                 $this->setSessionVariablesForUser($userDataFromDatabase);
-                return true;
+                $resultArray['success'] = true;
+                $resultArray['message'] = 'Succesvol ingelogd.';
+                return $resultArray;
             }
             
             // If neither hashed nor plain text password worked, login failed
-            return false;
+            $resultArray['success'] = false;
+            $resultArray['message'] = 'Ongeldige gebruikersnaam of wachtwoord.';
+            return $resultArray;
             
         } catch (Exception $exceptionObject) {
             // If there was a database error, log it
@@ -89,13 +97,17 @@ class AuthController {
             error_log($errorLogMessage);
         }
         
-        // If an error occurred, return false
+        // If an error occurred, return error result
         if ($databaseErrorOccurred) {
-            return false;
+            $resultArray['success'] = false;
+            $resultArray['message'] = 'Er is een fout opgetreden bij het inloggen.';
+            return $resultArray;
         }
         
-        // Default return false if nothing else worked
-        return false;
+        // Default return error if nothing else worked
+        $resultArray['success'] = false;
+        $resultArray['message'] = 'Er is een onbekende fout opgetreden.';
+        return $resultArray;
     }
 
     // This function sets session variables for a logged in user

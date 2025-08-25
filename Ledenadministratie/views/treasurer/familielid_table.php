@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../controllers/FamilielidController.php';
-require_once __DIR__ . '/../../config/connection.php';
+require_once __DIR__ . '/../../../Ledenadministratie_config/connection.php';
 require_once __DIR__ . '/../../models/Soortlid.php';
 
 // Initialize database connection and controllers
@@ -27,48 +27,11 @@ $geselecteerd_boekjaar = null;
 if (isset($_SESSION['geselecteerd_boekjaar'])) {
     $geselecteerd_boekjaar = $_SESSION['geselecteerd_boekjaar'];
 }
-
-// Debug output on page if debug parameter is set
-if (isset($_GET['debug'])) {
-    echo '<div class="debug-info" style="background: #f5f5f5; padding: 10px; margin: 10px 0; border: 1px solid #ddd;">';
-    echo '<h4>Debug Information</h4>';
-    echo '<pre>';
-    echo "Session ID: " . session_id() . "\n";
-    
-    $boekjaarText = 'niet gezet';
-    if ($geselecteerd_boekjaar !== null) {
-        $boekjaarText = $geselecteerd_boekjaar;
-    }
-    echo "Geselecteerd boekjaar: " . $boekjaarText . "\n";
-    
-    echo "Aantal berekende contributies: " . count($berekende_contributies) . "\n";
-    echo "Berekende contributies:\n";
-    print_r($berekende_contributies);
-    echo '</pre>';
-    echo '</div>';
-}
 ?>
 
 <h3>Familieleden Overzicht</h3>
 <?php if ($geselecteerd_boekjaar): ?>
     <p><strong>Contributies voor boekjaar: <?php echo htmlspecialchars($geselecteerd_boekjaar); ?></strong></p>
-<?php endif; ?>
-
-<?php if (isset($_GET['debug'])): ?>
-    <div style="background-color: #f8f9fa; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd;">
-        <h4>Debug Informatie</h4>
-        <pre><?php 
-            echo "Sessie ID: " . session_id() . "\n";
-            echo "Berekende contributies: " . print_r($berekende_contributies, true) . "\n";
-            
-            $boekjaarDebugText = 'niet gezet';
-            if ($geselecteerd_boekjaar !== null) {
-                $boekjaarDebugText = $geselecteerd_boekjaar;
-            }
-            echo "Geselecteerd boekjaar: " . $boekjaarDebugText . "\n";
-            echo "Contributies per lid: " . print_r($berekende_contributies, true);
-        ?></pre>
-    </div>
 <?php endif; ?>
 
 <table>

@@ -14,6 +14,11 @@
                 <?= htmlspecialchars($error_message) ?>
             </div>
         <?php endif; ?>
+        <?php if (isset($success_message) && !empty(trim($success_message))): ?>
+            <div class="message success">
+                <?= htmlspecialchars($success_message) ?>
+            </div>
+        <?php endif; ?>
         <form method="POST" action="/Ledenadministratie/controllers/AuthHandler.php" class="login-form">
             <input type="text" name="username" class="input-field" placeholder="Gebruikersnaam" required>
             <input type="password" name="password" class="input-field" placeholder="Wachtwoord" required>

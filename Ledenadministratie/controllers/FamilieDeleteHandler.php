@@ -75,25 +75,35 @@ class FamilieDeleteHandler {
         $deleteOperationResult = $this->familieModelObject->delete($familieIdToDelete);
         
         // Check if the delete operation was successful
-        $deleteWasSuccessful = false;
-        if ($deleteOperationResult) {
-            $deleteWasSuccessful = true;
+        // The model now returns an array with success status and message
+        if (is_array($deleteOperationResult)) {
+            // New structured response from model
+            $deleteResultArray = array();
+            $deleteResultArray['success'] = $deleteOperationResult['success'];
+            $deleteResultArray['message'] = $deleteOperationResult['message'];
+            return $deleteResultArray;
+        } else {
+            // Fallback for old boolean response (backwards compatibility)
+            $deleteWasSuccessful = false;
+            if ($deleteOperationResult) {
+                $deleteWasSuccessful = true;
+            }
+            
+            // If delete was successful, return success message
+            if ($deleteWasSuccessful) {
+                $successMessageText = "Familie succesvol verwijderd.";
+                $successResultArray = array();
+                $successResultArray['success'] = true;
+                $successResultArray['message'] = $successMessageText;
+                return $successResultArray;
+            }
+            
+            // If we get here, the delete failed
+            $deleteFailedErrorMessage = "Fout bij het verwijderen van de familie.";
+            $deleteFailedErrorArray = array();
+            $deleteFailedErrorArray['success'] = false;
+            $deleteFailedErrorArray['message'] = $deleteFailedErrorMessage;
+            return $deleteFailedErrorArray;
         }
-        
-        // If delete was successful, return success message
-        if ($deleteWasSuccessful) {
-            $successMessageText = "Familie succesvol verwijderd.";
-            $successResultArray = array();
-            $successResultArray['success'] = true;
-            $successResultArray['message'] = $successMessageText;
-            return $successResultArray;
-        }
-        
-        // If we get here, the delete failed
-        $deleteFailedErrorMessage = "Fout bij het verwijderen van de familie.";
-        $deleteFailedErrorArray = array();
-        $deleteFailedErrorArray['success'] = false;
-        $deleteFailedErrorArray['message'] = $deleteFailedErrorMessage;
-        return $deleteFailedErrorArray;
     }
 }

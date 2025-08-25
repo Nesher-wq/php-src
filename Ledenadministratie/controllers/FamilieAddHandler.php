@@ -1,34 +1,82 @@
 <?php
-// Include the Familie model so we can add new families to the database
-require_once __DIR__ . '/../models/Familie.php';
-require_once __DIR__ . '/../includes/utils.php';
+/**
+ * FamilieAddHandler.php - Family Creation Request Handler
+ * 
+ * This specialized handler processes requests to add new families to the system.
+ * It validates form data, ensures required fields are present, and coordinates
+ * with the Familie model to perform the database insertion.
+ * 
+ * Responsibilities:
+ * - Validate POST request contains family creation form submission
+ * - Extract and validate family data from form fields
+ * - Check for required fields (naam, address information)
+ * - Delegate to Familie model for database operations
+ * - Return standardized response format for success/error handling
+ * 
+ * Form Fields Expected:
+ * - naam: Family surname (required)
+ * - straat: Street name (required)
+ * - huisnummer: House number (required) 
+ * - postcode: Postal code (required)
+ * - woonplaats: City/town name (required)
+ * 
+ * Security Features:
+ * - Input validation and sanitization
+ * - Protection against empty/invalid submissions
+ * - Consistent error messaging
+ */
 
-// This class handles adding new families to the database
+// Dependency Loading: Include required models and utilities
+require_once __DIR__ . '/../models/Familie.php';    // Familie data model for database operations
+require_once __DIR__ . '/../includes/utils.php';    // Utility functions (logging, etc.)
+
+/**
+ * FamilieAddHandler - Specialized Handler for Family Creation
+ * 
+ * Implements the Single Responsibility Principle by focusing solely
+ * on family creation operations and delegating data persistence
+ * to the Familie model.
+ */
 class FamilieAddHandler {
-    // This variable stores our Familie model object
+    // Model Instance: Store Familie model for database operations
     public $familieModelObject;
     
-    // Constructor function that runs when we create a new FamilieAddHandler
+    /**
+     * Constructor - Initialize Handler with Database Connection
+     * 
+     * Creates Familie model instance with database connection
+     * for use in family creation operations.
+     * 
+     * @param PDO $databaseConnection Active database connection
+     */
     public function __construct($databaseConnection) {
-        // Create a new Familie model object and store it
+        // Model Initialization: Create Familie model with database access
         $this->familieModelObject = new models\Familie($databaseConnection);
     }
     
-    // This is the main function that handles add requests for families
+    /**
+     * handleAddFamilieRequest - Process Family Creation Requests
+     * 
+     * Validates that this is a legitimate family addition request
+     * by checking for the presence of the form submission button.
+     * Routes to appropriate processing method or returns error.
+     * 
+     * @return array Response array with success status and message
+     */
     public function handleAddFamilieRequest() {
-        // First we check if someone clicked the add familie button
+        // Request Validation: Check if family addition form was submitted
         $addButtonWasClicked = false;
         if (isset($_POST['add_familie'])) {
             $addButtonWasClicked = true;
         }
         
-        // If the add button was clicked, we try to add the new familie
+        // Valid Request Processing: Handle legitimate family addition requests
         if ($addButtonWasClicked) {
             $addResult = $this->addNewFamilieToDatabase();
             return $addResult;
         }
         
-        // If we get here, something went wrong with the request
+        // Invalid Request Handling: Return error for malformed requests
         $errorMessageText = "Invalid add familie request";
         $errorResultArray = array();
         $errorResultArray['success'] = false;

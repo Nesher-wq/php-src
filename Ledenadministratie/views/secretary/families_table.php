@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . '/../../includes/utils.php';
-
 // Get all families with member count
 $stmt = $pdo->query("
     SELECT f.*, COUNT(fl.id) as aantal_leden 
@@ -10,7 +8,6 @@ $stmt = $pdo->query("
     ORDER BY f.naam
 ");
 $families = $stmt->fetchAll(PDO::FETCH_ASSOC);
-writeLog('Loaded families count: ' . count($families));
 ?>
 
 <div class="section">

@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once __DIR__ . '/../../config/connection.php';
+require_once __DIR__ . '/../../../Ledenadministratie_config/connection.php';
 require_once __DIR__ . '/../../models/Contributie.php';
 
 // Initialize database connection
@@ -13,14 +13,6 @@ $pdo = $conn->getConnection();
 
 // Set PDO instance in Contributie model
 models\Contributie::setPDO($pdo);
-
-// Add debug information
-if (isset($_GET['debug'])) {
-    echo '<pre>';
-    echo 'Session contents:<br>';
-    print_r($_SESSION);
-    echo '</pre>';
-}
 
 // Show messages
 if (isset($_SESSION['message'])) {
@@ -40,7 +32,6 @@ $selected_year = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['boekjaar'])) {
         $boekjaar = $_POST['boekjaar'];
-        error_log("Form submitted with boekjaar: " . $boekjaar);
         
         try {
             // Create contributies for the selected year and get the data
