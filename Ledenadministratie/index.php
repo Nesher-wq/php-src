@@ -47,10 +47,7 @@ $authController = $auth_controller;   // CamelCase alias for AuthController
 $user_is_logged_in = isset($_SESSION['loggedin']) && $_SESSION['loggedin'];
 
 // Role Management: Extract user role from session for access control
-$current_user_role = '';
-if (isset($_SESSION['role'])) {
-    $current_user_role = $_SESSION['role'];
-}
+$current_user_role = $_SESSION['role'] ?? '';
 
 // Request State Management: Initialize variables for form processing
 $edit_familie = null;  // Will hold family data when editing
@@ -60,15 +57,13 @@ if (!$user_is_logged_in) {
     // User Not Logged In: Show login page with any error/success messages
     
     // Message Handling: Check for login-related messages and display them
-    $error_message = '';
+    $error_message = $_SESSION['error_message'] ?? '';
+    $success_message = $_SESSION['success_message'] ?? '';
+    
     if (isset($_SESSION['error_message'])) {
-        $error_message = $_SESSION['error_message'];
         unset($_SESSION['error_message']); // Clear message after displaying to prevent re-display
     }
-    
-    $success_message = '';
     if (isset($_SESSION['success_message'])) {
-        $success_message = $_SESSION['success_message'];
         unset($_SESSION['success_message']); // Clear message after displaying to prevent re-display
     }
     
@@ -81,7 +76,23 @@ if (!$user_is_logged_in) {
 
 // POST Request Handling: Process form submissions from authenticated users
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $edit_familie = handlePostRequest($current_user_role, $familie_controller);
+    $result = handlePostRequest($current_user_role, $familie_controller);
+    
+    // Extract variables from result
+    if (is_array($result) && isset($result['edit_familie'])) {
+        // This is a familielid operation result with specific structure
+        $edit_familie = $result['edit_familie'] ?? null;
+        $edit_familielid = $result['edit_familielid'] ?? null;
+        
+        // Set session messages if provided
+        if (!empty($result['message'] ?? '')) {
+            $_SESSION['message'] = $result['message'];
+            $_SESSION['message_type'] = $result['message_type'] ?? 'info';
+        }
+    } else {
+        // This is a regular familie operation result (direct famille data)
+        $edit_familie = $result;
+    }
 }
 
 /**
@@ -98,16 +109,10 @@ function handlePostRequest($user_role, $familie_controller) {
     $edit_familie_data = null; // Will hold family data if user is editing a family
     
     // Extract Action: Determine what operation the user wants to perform
-    $action = '';
-    if (isset($_POST['action'])) {
-        $action = $_POST['action'];
-    }
+    $action = $_POST['action'] ?? '';
     
     // Extract Handler: Determine which specialized handler should process this request
-    $handler = '';
-    if (isset($_POST['handler'])) {
-        $handler = $_POST['handler'];
-    }
+    $handler = $_POST['handler'] ?? '';
     
     // Treasurer Operations: Handle contribution-related requests
     if ($user_role === 'treasurer' && $handler === 'contributie') {
@@ -129,24 +134,22 @@ function handlePostRequest($user_role, $familie_controller) {
         $result = $familie_controller->handleRequest();
         
         // Extract familie data for edit form display
-        if (isset($result['familie']) && $result['familie'] !== null) {
-            $edit_familie_data = $result['familie']; // Store in return variable
-        }
+        $edit_familie_data = $result['familie'] ?? null;
         
         // Process the result and set session messages for user feedback
-        if (isset($result['success'])) {
-            if ($result['success']) {
-                // Only set success message if there's actually a message to display
-                if (isset($result['message']) && !empty(trim($result['message']))) {
-                    $_SESSION['message'] = $result['message'];
-                    $_SESSION['message_type'] = 'success';
-                }
-            } else {
-                // Only set error message if there's actually a message to display
-                if (isset($result['message']) && !empty(trim($result['message']))) {
-                    $_SESSION['message'] = $result['message'];
-                    $_SESSION['message_type'] = 'error';
-                }
+        if ($result['success'] ?? false) {
+            // Only set success message if there's actually a message to display
+            $message = $result['message'] ?? '';
+            if (!empty(trim($message))) {
+                $_SESSION['message'] = $message;
+                $_SESSION['message_type'] = 'success';
+            }
+        } else {
+            // Only set error message if there's actually a message to display
+            $message = $result['message'] ?? '';
+            if (!empty(trim($message))) {
+                $_SESSION['message'] = $message;
+                $_SESSION['message_type'] = 'error';
             }
         }
         
@@ -162,8 +165,16 @@ function handlePostRequest($user_role, $familie_controller) {
 
     // Handle family member actions (secretary only)
     if (($action === 'add_familielid' || $action === 'edit_familielid' || $action === 'delete_familielid') && $can_manage_families) {
+        // Include the handler and capture the variables it sets
         include __DIR__ . '/controllers/FamilielidHandler.php';
-        return;
+        
+        // Return both familie and familielid data
+        return array(
+            'edit_familie' => $edit_familie ?? null,
+            'edit_familielid' => $edit_familielid ?? null,
+            'message' => $message ?? '',
+            'message_type' => $message_type ?? ''
+        );
     }
     
     // Handle user management (admin only)
@@ -182,10 +193,7 @@ function handlePostRequest($user_role, $familie_controller) {
 }
 
 // Handle change password page request (GET)
-$get_action = '';
-if (isset($_GET['action'])) {
-    $get_action = $_GET['action'];
-}
+$get_action = $_GET['action'] ?? '';
 
 if ($get_action === 'change_password') {
     include __DIR__ . '/views/change_password.php';
@@ -200,14 +208,12 @@ if ($get_action === 'logout') {
 }
 
 // Check for session messages and set variables for dashboard display
-$message = '';
-$message_type = '';
+$message = $_SESSION['message'] ?? '';
+$message_type = $_SESSION['message_type'] ?? '';
 if (isset($_SESSION['message'])) {
-    $message = $_SESSION['message'];
     unset($_SESSION['message']); // Clear the message after displaying
 }
 if (isset($_SESSION['message_type'])) {
-    $message_type = $_SESSION['message_type'];
     unset($_SESSION['message_type']); // Clear the message type after displaying
 }
 

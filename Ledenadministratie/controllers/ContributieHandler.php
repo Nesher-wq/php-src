@@ -34,10 +34,7 @@ if ($requestIsPostMethod && $actionParameterExists && $actionIsCorrect) {
     }
     
     // Get the boekjaar from POST data
-    $boekjaarFromForm = null;
-    if (isset($_POST['boekjaar'])) {
-        $boekjaarFromForm = $_POST['boekjaar'];
-    }
+    $boekjaarFromForm = $_POST['boekjaar'] ?? null;
     
     // Check if boekjaar was provided
     $boekjaarIsEmpty = ($boekjaarFromForm == null || $boekjaarFromForm == '');
@@ -67,32 +64,20 @@ if ($requestIsPostMethod && $actionParameterExists && $actionIsCorrect) {
     // Handle successful calculation
     if ($calculationWasSuccessful) {
         // Store the calculated contributions in session
-        if (isset($calculationResult['contributies'])) {
-            $_SESSION['berekende_contributies'] = $calculationResult['contributies'];
-        }
+        $_SESSION['berekende_contributies'] = $calculationResult['contributies'] ?? [];
         
         // Store the selected boekjaar in session
         $_SESSION['geselecteerd_boekjaar'] = $boekjaarFromForm;
         
         // Set success message
-        if (isset($calculationResult['message'])) {
-            $_SESSION['message'] = $calculationResult['message'];
-        } else {
-            $_SESSION['message'] = 'Contributies succesvol berekend.';
-        }
+        $_SESSION['message'] = $calculationResult['message'] ?? 'Contributies succesvol berekend.';
         $_SESSION['message_type'] = 'success';
     }
     
     // Handle failed calculation
     if (!$calculationWasSuccessful) {
         // Set error message
-        $errorMessageText = 'Fout bij berekenen contributies: ';
-        if (isset($calculationResult['error'])) {
-            $errorMessageText = $errorMessageText . $calculationResult['error'];
-        } else {
-            $errorMessageText = $errorMessageText . 'Onbekende fout';
-        }
-        
+        $errorMessageText = 'Fout bij berekenen contributies: ' . ($calculationResult['error'] ?? 'Onbekende fout');
         $_SESSION['message'] = $errorMessageText;
         $_SESSION['message_type'] = 'error';
     }

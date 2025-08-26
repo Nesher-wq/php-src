@@ -86,10 +86,7 @@ class FamilieController {
         }
 
         // Get the action from POST data
-        $actionFromPostData = '';
-        if (isset($_POST['action'])) {
-            $actionFromPostData = $_POST['action'];
-        }
+        $actionFromPostData = $_POST['action'] ?? '';
 
         // Check what action we need to perform and call the right handler
         $actionIsAddFamily = false;

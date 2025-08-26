@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../controllers/FamilielidController.php';
-require_once __DIR__ . '/../../../Ledenadministratie_config/connection.php';
+require_once __DIR__ . '/../../../../Ledenadministratie_config/connection.php';
 require_once __DIR__ . '/../../models/Soortlid.php';
 
 // Initialize database connection and controllers
@@ -18,15 +18,9 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Haal berekende contributies op uit session
-$berekende_contributies = array();
-if (isset($_SESSION['berekende_contributies'])) {
-    $berekende_contributies = $_SESSION['berekende_contributies'];
-}
+$berekende_contributies = $_SESSION['berekende_contributies'] ?? array();
 
-$geselecteerd_boekjaar = null;
-if (isset($_SESSION['geselecteerd_boekjaar'])) {
-    $geselecteerd_boekjaar = $_SESSION['geselecteerd_boekjaar'];
-}
+$geselecteerd_boekjaar = $_SESSION['geselecteerd_boekjaar'] ?? null;
 ?>
 
 <h3>Familieleden Overzicht</h3>
@@ -92,15 +86,8 @@ if (isset($_SESSION['geselecteerd_boekjaar'])) {
         $totaal_algemeen = 0;
         
         foreach ($berekende_contributies as $contributie) {
-            $contributieType = '';
-            if (isset($contributie['contributie_type'])) {
-                $contributieType = $contributie['contributie_type'];
-            }
-            
-            $contributieBedrag = 0;
-            if (isset($contributie['bedrag'])) {
-                $contributieBedrag = $contributie['bedrag'];
-            }
+            $contributieType = $contributie['contributie_type'] ?? '';
+            $contributieBedrag = $contributie['bedrag'] ?? 0;
             
             if ($contributieType === 'Basis') {
                 $totaal_basis = $totaal_basis + $contributieBedrag;

@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once __DIR__ . '/../../../Ledenadministratie_config/connection.php';
+require_once __DIR__ . '/../../../../Ledenadministratie_config/connection.php';
 require_once __DIR__ . '/../../models/Contributie.php';
 
 // Initialize database connection
@@ -15,12 +15,15 @@ $pdo = $conn->getConnection();
 models\Contributie::setPDO($pdo);
 
 // Show messages
-if (isset($_SESSION['message'])) {
-    echo '<div class="alert alert-success">' . htmlspecialchars($_SESSION['message']) . '</div>';
+$message = $_SESSION['message'] ?? '';
+$error = $_SESSION['error'] ?? '';
+
+if ($message) {
+    echo '<div class="alert alert-success">' . htmlspecialchars($message) . '</div>';
     unset($_SESSION['message']);
 }
-if (isset($_SESSION['error'])) {
-    echo '<div class="alert alert-danger">' . htmlspecialchars($_SESSION['error']) . '</div>';
+if ($error) {
+    echo '<div class="alert alert-danger">' . htmlspecialchars($error) . '</div>';
     unset($_SESSION['error']);
 }
 
@@ -30,8 +33,8 @@ $selected_year = null;
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['boekjaar'])) {
-        $boekjaar = $_POST['boekjaar'];
+    $boekjaar = $_POST['boekjaar'] ?? null;
+    if ($boekjaar) {
         
         try {
             // Create contributies for the selected year and get the data

@@ -2,7 +2,7 @@
 // This file handles login and logout requests from users
 // Include the required files
 require_once __DIR__ . '/AuthController.php';
-require_once __DIR__ . '/../../Ledenadministratie_config/connection.php';
+require_once __DIR__ . '/../../../Ledenadministratie_config/connection.php';
 
 use config\Connection;
 
@@ -24,22 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Handle login POST request
 if ($requestMethodIsPost) {
     // Get username and password from POST data
-    $usernameFromForm = '';
-    $passwordFromForm = '';
-    
-    // Check if username was provided
-    $usernameFieldExists = false;
-    if (isset($_POST['username'])) {
-        $usernameFieldExists = true;
-        $usernameFromForm = $_POST['username'];
-    }
-    
-    // Check if password was provided
-    $passwordFieldExists = false;
-    if (isset($_POST['password'])) {
-        $passwordFieldExists = true;
-        $passwordFromForm = $_POST['password'];
-    }
+    $usernameFromForm = $_POST['username'] ?? '';
+    $passwordFromForm = $_POST['password'] ?? '';
     
     // Check if both username and password are provided
     $usernameIsEmpty = false;
@@ -125,16 +111,8 @@ if ($requestMethodIsPost) {
 }
 
 // Check if this is a logout request
-$logoutRequested = false;
-$actionParameterExists = false;
-if (isset($_GET['action'])) {
-    $actionParameterExists = true;
-    $actionFromGet = $_GET['action'];
-    
-    if ($actionFromGet === 'logout') {
-        $logoutRequested = true;
-    }
-}
+$actionFromGet = $_GET['action'] ?? '';
+$logoutRequested = ($actionFromGet === 'logout');
 
 // Handle logout request
 if ($logoutRequested) {

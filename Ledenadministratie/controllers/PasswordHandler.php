@@ -17,15 +17,8 @@ if ($currentScriptFilename === 'index.php') {
 }
 
 // Check if action parameter exists
-if (isset($_GET['action'])) {
-    $actionParameterExists = true;
-    $actionFromGet = $_GET['action'];
-    
-    // Check if action is change_password
-    if ($actionFromGet === 'change_password') {
-        $actionIsChangePassword = true;
-    }
-}
+$actionFromGet = $_GET['action'] ?? '';
+$actionIsChangePassword = ($actionFromGet === 'change_password');
 
 // If all conditions are met, show change password page
 if ($scriptFilenameIsIndex && $actionParameterExists && $actionIsChangePassword) {
@@ -62,22 +55,14 @@ if ($passwordChangePostRequest) {
     // Get form data
     $currentPasswordFromForm = '';
     $newPasswordFromForm = '';
-    $confirmPasswordFromForm = '';
-    
     // Get current password
-    if (isset($_POST['current_password'])) {
-        $currentPasswordFromForm = $_POST['current_password'];
-    }
+    $currentPasswordFromForm = $_POST['current_password'] ?? '';
     
     // Get new password
-    if (isset($_POST['new_user_password'])) {
-        $newPasswordFromForm = $_POST['new_user_password'];
-    }
+    $newPasswordFromForm = $_POST['new_user_password'] ?? '';
     
     // Get confirm password
-    if (isset($_POST['confirm_password'])) {
-        $confirmPasswordFromForm = $_POST['confirm_password'];
-    }
+    $confirmPasswordFromForm = $_POST['confirm_password'] ?? '';
     
     // Get user ID from session
     $userIdFromSession = $_SESSION['user_id'];

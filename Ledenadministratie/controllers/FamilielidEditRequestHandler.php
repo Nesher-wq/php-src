@@ -10,23 +10,12 @@ class FamilielidEditRequestHandler {
     }
     
     public function handleEditFamilielidFormRequest() {
-        // Get familielid ID to edit
-        $editFamilielidId = null;
-        if (isset($_POST['edit_familielid_id'])) {
-            $editFamilielidId = $_POST['edit_familielid_id'];
-        }
-        
-        // Get familie ID
-        $familieId = null;
-        if (isset($_POST['edit_familie_id'])) {
-            $familieId = $_POST['edit_familie_id'];
-        }
+        // Get form data for edit request
+        $editFamilielidId = $_POST['edit_familielid_id'] ?? null;
+        $familieId = $_POST['edit_familie_id'] ?? null;
         
         // Check if both IDs are provided
-        $bothIdsProvided = false;
-        if ($editFamilielidId != null && $familieId != null) {
-            $bothIdsProvided = true;
-        }
+        $bothIdsProvided = ($editFamilielidId !== null && $familieId !== null);
         
         if ($bothIdsProvided) {
             // Get familielid data
@@ -35,16 +24,9 @@ class FamilielidEditRequestHandler {
             // Get familie data
             $editFamilieData = $this->familieControllerObject->getFamilieById($familieId);
             
-            // Check if both data sets were retrieved
-            $familielidDataExists = false;
-            if ($editFamilielidData != null) {
-                $familielidDataExists = true;
-            }
-            
-            $familieDataExists = false;
-            if ($editFamilieData != null) {
-                $familieDataExists = true;
-            }
+            // Check if both data sets were retrieved successfully
+            $familielidDataExists = ($editFamilielidData !== null);
+            $familieDataExists = ($editFamilieData !== null);
             
             // If both data sets exist, return them
             if ($familielidDataExists && $familieDataExists) {
@@ -77,41 +59,13 @@ class FamilielidEditRequestHandler {
     }
     
     public function handleUpdateFamilielidRequest() {
-        // Get familie ID from form
-        $familieIdFromForm = '';
-        if (isset($_POST['familie_id'])) {
-            $familieIdFromForm = $_POST['familie_id'];
-        }
-        
-        // Get familielid ID from form
-        $familielidIdFromForm = '';
-        if (isset($_POST['familielid_id'])) {
-            $familielidIdFromForm = $_POST['familielid_id'];
-        }
-        
-        // Get familielid naam from form
-        $familielidNaamFromForm = '';
-        if (isset($_POST['familielid_naam'])) {
-            $familielidNaamFromForm = $_POST['familielid_naam'];
-        }
-        
-        // Get familielid geboortedatum from form
-        $familielidGeboortedatumFromForm = '';
-        if (isset($_POST['familielid_geboortedatum'])) {
-            $familielidGeboortedatumFromForm = $_POST['familielid_geboortedatum'];
-        }
-        
-        // Get soort familielid from form
-        $soortFamilielidFromForm = '';
-        if (isset($_POST['soort_familielid'])) {
-            $soortFamilielidFromForm = $_POST['soort_familielid'];
-        }
-        
-        // Get stalling from form
-        $stallingFromForm = 0;
-        if (isset($_POST['stalling'])) {
-            $stallingFromForm = $_POST['stalling'];
-        }
+        // Get form data for update
+        $familieIdFromForm = $_POST['familie_id'] ?? '';
+        $familielidIdFromForm = $_POST['familielid_id'] ?? '';
+        $familielidNaamFromForm = $_POST['familielid_naam'] ?? '';
+        $familielidGeboortedatumFromForm = $_POST['familielid_geboortedatum'] ?? '';
+        $soortFamilielidFromForm = $_POST['soort_familielid'] ?? '';
+        $stallingFromForm = $_POST['stalling'] ?? 0;
         
         // Try to update the familielid
         $updateResult = $this->familielidControllerObject->updateFamilielid(
@@ -123,10 +77,7 @@ class FamilielidEditRequestHandler {
         );
         
         // Check if update was successful
-        $updateWasSuccessful = false;
-        if ($updateResult) {
-            $updateWasSuccessful = true;
-        }
+        $updateWasSuccessful = (bool)$updateResult;
         
         // Set appropriate message and reload familie
         if ($updateWasSuccessful) {
@@ -157,10 +108,7 @@ class FamilielidEditRequestHandler {
     
     public function handleCancelEditFamilielidRequest() {
         // Get familie ID from form
-        $familieIdFromForm = '';
-        if (isset($_POST['familie_id'])) {
-            $familieIdFromForm = $_POST['familie_id'];
-        }
+        $familieIdFromForm = $_POST['familie_id'] ?? '';
         
         // Reload familie for edit screen
         $editFamilie = $this->familieControllerObject->getFamilieById($familieIdFromForm);

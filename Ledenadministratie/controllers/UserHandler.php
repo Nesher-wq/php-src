@@ -33,16 +33,7 @@ if (!$shouldProcessRequest) {
 }
 
 // Get the action parameter
-$actionFromPost = '';
-$actionParameterExists = false;
-if (isset($_POST['action'])) {
-    $actionParameterExists = true;
-    $actionFromPost = $_POST['action'];
-}
-
-// Initialize result variables
-$message = '';
-$message_type = '';
+$actionFromPost = $_POST['action'] ?? '';
 
 // Handle different actions
 $actionIsAddUser = false;
@@ -53,25 +44,13 @@ if ($actionFromPost === 'add_user') {
 // Handle add user action
 if ($actionIsAddUser) {
     // Get form data for creating user
-    $usernameFromForm = '';
-    if (isset($_POST['username'])) {
-        $usernameFromForm = $_POST['username'];
-    }
+    $usernameFromForm = $_POST['username'] ?? '';
     
-    $passwordFromForm = '';
-    if (isset($_POST['password'])) {
-        $passwordFromForm = $_POST['password'];
-    }
+    $passwordFromForm = $_POST['password'] ?? '';
     
-    $roleFromForm = '';
-    if (isset($_POST['role'])) {
-        $roleFromForm = $_POST['role'];
-    }
+    $roleFromForm = $_POST['role'] ?? '';
     
-    $descriptionFromForm = '';
-    if (isset($_POST['description'])) {
-        $descriptionFromForm = $_POST['description'];
-    }
+    $descriptionFromForm = $_POST['description'] ?? '';
     
     // Try to create the user
     $createUserResult = $userController->createUser(
@@ -89,11 +68,11 @@ if ($actionIsAddUser) {
     
     // Set appropriate message
     if ($createWasSuccessful) {
-        $message = "Gebruiker succesvol aangemaakt.";
-        $message_type = "success";
+        $_SESSION['message'] = "Gebruiker succesvol aangemaakt.";
+        $_SESSION['message_type'] = "success";
     } else {
-        $message = "Fout bij het aanmaken van de gebruiker.";
-        $message_type = "error";
+        $_SESSION['message'] = "Fout bij het aanmaken van de gebruiker.";
+        $_SESSION['message_type'] = "error";
     }
 }
 
@@ -106,30 +85,15 @@ if ($actionFromPost === 'edit_user') {
 // Handle edit user action
 if ($actionIsEditUser) {
     // Get form data for updating user
-    $userIdFromForm = '';
-    if (isset($_POST['user_id'])) {
-        $userIdFromForm = $_POST['user_id'];
-    }
+    $userIdFromForm = $_POST['user_id'] ?? '';
     
-    $usernameFromForm = '';
-    if (isset($_POST['username'])) {
-        $usernameFromForm = $_POST['username'];
-    }
+    $usernameFromForm = $_POST['username'] ?? '';
     
-    $passwordFromForm = '';
-    if (isset($_POST['password'])) {
-        $passwordFromForm = $_POST['password'];
-    }
+    $passwordFromForm = $_POST['password'] ?? '';
     
-    $roleFromForm = '';
-    if (isset($_POST['role'])) {
-        $roleFromForm = $_POST['role'];
-    }
+    $roleFromForm = $_POST['role'] ?? '';
     
-    $descriptionFromForm = '';
-    if (isset($_POST['description'])) {
-        $descriptionFromForm = $_POST['description'];
-    }
+    $descriptionFromForm = $_POST['description'] ?? '';
     
     // Try to update the user
     $updateUserResult = $userController->updateUser(
@@ -148,11 +112,11 @@ if ($actionIsEditUser) {
     
     // Set appropriate message
     if ($updateWasSuccessful) {
-        $message = "Gebruiker succesvol bijgewerkt.";
-        $message_type = "success";
+        $_SESSION['message'] = "Gebruiker succesvol bijgewerkt.";
+        $_SESSION['message_type'] = "success";
     } else {
-        $message = "Fout bij het bijwerken van de gebruiker.";
-        $message_type = "error";
+        $_SESSION['message'] = "Fout bij het bijwerken van de gebruiker.";
+        $_SESSION['message_type'] = "error";
     }
 }
 
@@ -165,10 +129,7 @@ if ($actionFromPost === 'delete_user') {
 // Handle delete user action
 if ($actionIsDeleteUser) {
     // Get user ID to delete
-    $userIdToDelete = '';
-    if (isset($_POST['user_id'])) {
-        $userIdToDelete = $_POST['user_id'];
-    }
+    $userIdToDelete = $_POST['user_id'] ?? '';
     
     // Check if user is trying to delete themselves
     $userCanDeleteThisUser = true;
@@ -229,16 +190,16 @@ if ($actionIsDeleteUser) {
         
         // Set appropriate message
         if ($deleteWasSuccessful) {
-            $message = "Gebruiker succesvol verwijderd.";
-            $message_type = "success";
+            $_SESSION['message'] = "Gebruiker succesvol verwijderd.";
+            $_SESSION['message_type'] = "success";
         } else {
-            $message = "Fout bij het verwijderen van de gebruiker.";
-            $message_type = "error";
+            $_SESSION['message'] = "Fout bij het verwijderen van de gebruiker.";
+            $_SESSION['message_type'] = "error";
         }
     } else {
         // User tried to delete themselves
-        $message = "Je kunt jezelf niet verwijderen.";
-        $message_type = "error";
+        $_SESSION['message'] = "Je kunt jezelf niet verwijderen.";
+        $_SESSION['message_type'] = "error";
     }
 }
 ?>

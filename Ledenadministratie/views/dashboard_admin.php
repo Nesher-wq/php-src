@@ -12,10 +12,7 @@ try {
 }
 
 // Get current user info to prevent self-deletion
-$currentUsername = '';
-if (isset($_SESSION['username'])) {
-    $currentUsername = $_SESSION['username'];
-}
+$currentUsername = $_SESSION['username'] ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -35,11 +32,7 @@ if (isset($_SESSION['username'])) {
     <div class="container">
         <div class="welcome-section">
             <h2>Hallo, <?php 
-                $welcomeUsername = 'admin';
-                if (isset($_SESSION['username'])) {
-                    $welcomeUsername = $_SESSION['username'];
-                }
-                echo htmlspecialchars($welcomeUsername); 
+                echo htmlspecialchars($_SESSION['username'] ?? 'admin'); 
             ?></h2>
         </div>
         

@@ -92,32 +92,12 @@ class FamilieAddHandler {
         $familiestraatFromForm = '';
         $familieHuisnummerFromForm = '';
         $familiePostcodeFromForm = '';
-        $familieWoonplaatsFromForm = '';
-        
-        // Get the familie naam from the form
-        if (isset($_POST['familie_naam'])) {
-            $familieNaamFromForm = $_POST['familie_naam'];
-        }
-        
-        // Get the familie straat from the form
-        if (isset($_POST['familie_straat'])) {
-            $familiestraatFromForm = $_POST['familie_straat'];
-        }
-        
-        // Get the familie huisnummer from the form
-        if (isset($_POST['familie_huisnummer'])) {
-            $familieHuisnummerFromForm = $_POST['familie_huisnummer'];
-        }
-        
-        // Get the familie postcode from the form
-        if (isset($_POST['familie_postcode'])) {
-            $familiePostcodeFromForm = $_POST['familie_postcode'];
-        }
-        
-        // Get the familie woonplaats from the form
-        if (isset($_POST['familie_woonplaats'])) {
-            $familieWoonplaatsFromForm = $_POST['familie_woonplaats'];
-        }
+        // Get form data
+        $familieNaamFromForm = $_POST['familie_naam'] ?? '';
+        $familiestraatFromForm = $_POST['familie_straat'] ?? '';
+        $familieHuisnummerFromForm = $_POST['familie_huisnummer'] ?? '';
+        $familiePostcodeFromForm = $_POST['familie_postcode'] ?? '';
+        $familieWoonplaatsFromForm = $_POST['familie_woonplaats'] ?? '';
         
         // Now try to create the new familie using our model
         $createOperationResult = $this->familieModelObject->create(

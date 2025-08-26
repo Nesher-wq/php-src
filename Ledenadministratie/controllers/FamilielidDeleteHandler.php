@@ -54,17 +54,9 @@ class FamilielidDeleteHandler {
     
     // This function handles full delete requests (from forms)
     public function handleDeleteFamilielidRequest() {
-        // Get familie ID from form
-        $familieIdFromForm = '';
-        if (isset($_POST['familie_id'])) {
-            $familieIdFromForm = $_POST['familie_id'];
-        }
-        
-        // Get familielid ID to delete
-        $deleteFamilielidId = '';
-        if (isset($_POST['delete_familielid_id'])) {
-            $deleteFamilielidId = $_POST['delete_familielid_id'];
-        }
+        // Get form data
+        $familieIdFromForm = $_POST['familie_id'] ?? '';
+        $deleteFamilielidId = $_POST['delete_familielid_id'] ?? '';
         
         // Try to delete the familielid using our private method
         $deleteWasSuccessful = $this->executeDatabaseDelete($deleteFamilielidId);

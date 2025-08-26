@@ -51,12 +51,7 @@ class FamilieEditHandler {
     // This function gets familie data for editing the form
     public function getFamilieDataForEditing() {
         // First we need to get the ID of the familie we want to edit
-        $familieIdToEdit = '';
-        
-        // Check if the familie ID is in the edit_familie_id field
-        if (isset($_POST['edit_familie_id'])) {
-            $familieIdToEdit = $_POST['edit_familie_id'];
-        }
+        $familieIdToEdit = $_POST['edit_familie_id'] ?? '';
         
         // Check if we actually found a valid familie ID
         $familieIdIsEmpty = false;
@@ -102,38 +97,13 @@ class FamilieEditHandler {
         $updatedFamilieNaamFromForm = '';
         $updatedFamiliestraatFromForm = '';
         $updatedFamilieHuisnummerFromForm = '';
-        $updatedFamiliePostcodeFromForm = '';
-        $updatedFamilieWoonplaatsFromForm = '';
-        
-        // Get the familie ID that we want to update
-        if (isset($_POST['familie_id'])) {
-            $familieIdToUpdate = $_POST['familie_id'];
-        }
-        
-        // Get the updated familie naam from the form
-        if (isset($_POST['familie_naam'])) {
-            $updatedFamilieNaamFromForm = $_POST['familie_naam'];
-        }
-        
-        // Get the updated familie straat from the form
-        if (isset($_POST['familie_straat'])) {
-            $updatedFamiliestraatFromForm = $_POST['familie_straat'];
-        }
-        
-        // Get the updated familie huisnummer from the form
-        if (isset($_POST['familie_huisnummer'])) {
-            $updatedFamilieHuisnummerFromForm = $_POST['familie_huisnummer'];
-        }
-        
-        // Get the updated familie postcode from the form
-        if (isset($_POST['familie_postcode'])) {
-            $updatedFamiliePostcodeFromForm = $_POST['familie_postcode'];
-        }
-        
-        // Get the updated familie woonplaats from the form
-        if (isset($_POST['familie_woonplaats'])) {
-            $updatedFamilieWoonplaatsFromForm = $_POST['familie_woonplaats'];
-        }
+        // Get form data for update
+        $familieIdToUpdate = $_POST['familie_id'] ?? '';
+        $updatedFamilieNaamFromForm = $_POST['familie_naam'] ?? '';
+        $updatedFamiliestraatFromForm = $_POST['familie_straat'] ?? '';
+        $updatedFamilieHuisnummerFromForm = $_POST['familie_huisnummer'] ?? '';
+        $updatedFamiliePostcodeFromForm = $_POST['familie_postcode'] ?? '';
+        $updatedFamilieWoonplaatsFromForm = $_POST['familie_woonplaats'] ?? '';
         
         // Now try to update the familie using our model
         $updateOperationResult = $this->familieModelObject->update(

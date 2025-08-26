@@ -23,7 +23,7 @@ class Boekjaar {
 
     // Haal alle boekjaren op
     public function getAllBoekjaren() {
-        require_once __DIR__ . '/../../Ledenadministratie_config/connection.php';
+        require_once __DIR__ . '/../../../Ledenadministratie_config/connection.php';
         $conn = new \config\Connection();
         $pdo = $conn->getConnection();
 
@@ -37,18 +37,10 @@ class Boekjaar {
             $boekjaar->jaar = $row['jaar'];
             
             // Set default values for basiscontributie
-            if (isset($row['basiscontributie'])) {
-                $boekjaar->basiscontributie = $row['basiscontributie'];
-            } else {
-                $boekjaar->basiscontributie = 100.00;
-            }
+            $boekjaar->basiscontributie = $row['basiscontributie'] ?? 100.00;
             
             // Set default values for stallingskosten
-            if (isset($row['stallingskosten'])) {
-                $boekjaar->stallingskosten = $row['stallingskosten'];
-            } else {
-                $boekjaar->stallingskosten = 50.00;
-            }
+            $boekjaar->stallingskosten = $row['stallingskosten'] ?? 50.00;
             
             $boekjaren[] = $boekjaar;
         }
@@ -58,7 +50,7 @@ class Boekjaar {
 
     // Haal het huidige boekjaar op (het meest recente jaar)
     public function getHuidigBoekjaar() {
-        require_once __DIR__ . '/../../Ledenadministratie_config/connection.php';
+        require_once __DIR__ . '/../../../Ledenadministratie_config/connection.php';
         $conn = new \config\Connection();
         $pdo = $conn->getConnection();
 
@@ -78,7 +70,7 @@ class Boekjaar {
 
     // Haal boekjaar op basis van jaar
     public function getBoekjaarByJaar($jaar) {
-        require_once __DIR__ . '/../../Ledenadministratie_config/connection.php';
+        require_once __DIR__ . '/../../../Ledenadministratie_config/connection.php';
         $conn = new \config\Connection();
         $pdo = $conn->getConnection();
 
@@ -92,18 +84,10 @@ class Boekjaar {
             $boekjaar->jaar = $result['jaar'];
             
             // Set default values for basiscontributie
-            if (isset($result['basiscontributie'])) {
-                $boekjaar->basiscontributie = $result['basiscontributie'];
-            } else {
-                $boekjaar->basiscontributie = 100.00;
-            }
+            $boekjaar->basiscontributie = $result['basiscontributie'] ?? 100.00;
             
             // Set default values for stallingskosten
-            if (isset($result['stallingskosten'])) {
-                $boekjaar->stallingskosten = $result['stallingskosten'];
-            } else {
-                $boekjaar->stallingskosten = 50.00;
-            }
+            $boekjaar->stallingskosten = $result['stallingskosten'] ?? 50.00;
             
             return $boekjaar;
         }
@@ -113,7 +97,7 @@ class Boekjaar {
 
     // Voeg een nieuw boekjaar toe
     public function addBoekjaar($jaar) {
-        require_once __DIR__ . '/../../Ledenadministratie_config/connection.php';
+        require_once __DIR__ . '/../../../Ledenadministratie_config/connection.php';
         $conn = new \config\Connection();
         $pdo = $conn->getConnection();
 
@@ -123,7 +107,7 @@ class Boekjaar {
 
     // Controleer of een boekjaar bestaat
     public function boekjaarExists($jaar) {
-        require_once __DIR__ . '/../../Ledenadministratie_config/connection.php';
+        require_once __DIR__ . '/../../../Ledenadministratie_config/connection.php';
         $conn = new \config\Connection();
         $pdo = $conn->getConnection();
 

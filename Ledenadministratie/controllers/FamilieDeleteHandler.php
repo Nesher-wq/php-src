@@ -38,23 +38,9 @@ class FamilieDeleteHandler {
     
     // This function actually deletes the familie from the database
     public function deleteFamilieFromDatabase() {
-        // First we need to get the ID of the familie we want to delete
-        $familieIdToDelete = '';
-        $familieIdFound = false;
-        
-        // Check if the familie ID is in the delete_familie_id field
-        if (isset($_POST['delete_familie_id'])) {
-            $familieIdToDelete = $_POST['delete_familie_id'];
-            $familieIdFound = true;
-        }
-        
-        // If we didn't find it yet, check the familie_id field
-        if (!$familieIdFound) {
-            if (isset($_POST['familie_id'])) {
-                $familieIdToDelete = $_POST['familie_id'];
-                $familieIdFound = true;
-            }
-        }
+        // Get the ID of the familie we want to delete
+        $familieIdToDelete = $_POST['delete_familie_id'] ?? $_POST['familie_id'] ?? '';
+        $familieIdFound = !empty($familieIdToDelete);
         
         // Check if we actually found a valid familie ID
         $familieIdIsEmpty = false;

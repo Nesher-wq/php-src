@@ -15,7 +15,7 @@ class Soortlid {
     public $maximum_leeftijd;
 
     public function getOmschrijvingById($id) {
-        require_once __DIR__ . '/../../Ledenadministratie_config/connection.php';
+        require_once __DIR__ . '/../../../Ledenadministratie_config/connection.php';
         $conn = new Connection();
         $pdo = $conn->getConnection();
 
@@ -29,7 +29,7 @@ class Soortlid {
     // function to connect to SQL using connection.php and return the values from the Soortlid table
     public function getAllSoortleden() 
     {
-        require_once __DIR__ . '/../../Ledenadministratie_config/connection.php';
+        require_once __DIR__ . '/../../../Ledenadministratie_config/connection.php';
         $conn = new Connection();
         $pdo = $conn->getConnection();
 

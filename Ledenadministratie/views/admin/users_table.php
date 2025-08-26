@@ -60,32 +60,16 @@
             ?>
             <tr>
                 <td><?php 
-                    $userIdDisplay = '';
-                    if (isset($user['id'])) {
-                        $userIdDisplay = $user['id'];
-                    }
-                    echo htmlspecialchars($userIdDisplay); 
+                    echo htmlspecialchars($user['id'] ?? ''); 
                 ?></td>
                 <td><?php 
-                    $usernameDisplay = '';
-                    if (isset($user['username'])) {
-                        $usernameDisplay = $user['username'];
-                    }
-                    echo htmlspecialchars($usernameDisplay); 
+                    echo htmlspecialchars($user['username'] ?? ''); 
                 ?></td>
                 <td><?php 
-                    $roleDisplay = '';
-                    if (isset($user['role'])) {
-                        $roleDisplay = $user['role'];
-                    }
-                    echo htmlspecialchars($roleDisplay); 
+                    echo htmlspecialchars($user['role'] ?? ''); 
                 ?></td>
                 <td><?php 
-                    $descriptionDisplay = '';
-                    if (isset($user['description'])) {
-                        $descriptionDisplay = $user['description'];
-                    }
-                    echo htmlspecialchars($descriptionDisplay); 
+                    echo htmlspecialchars($user['description'] ?? ''); 
                 ?></td>
                 <td>
                     <!-- Edit Form -->
@@ -99,19 +83,12 @@
                             echo htmlspecialchars($userIdForForm); 
                         ?>">
                         <input type="text" name="username" value="<?php 
-                            $usernameForForm = '';
-                            if (isset($user['username'])) {
-                                $usernameForForm = $user['username'];
-                            }
-                            echo htmlspecialchars($usernameForForm); 
+                            echo htmlspecialchars($user['username'] ?? ''); 
                         ?>" required style="width: 240px;">
                         <input type="password" name="password" placeholder="Nieuw wachtwoord" style="width: 240px;">
                         <select name="role" required style="width: 240px;">
                             <option value="admin" <?php 
-                                $userRoleFromData = '';
-                                if (isset($user['role'])) {
-                                    $userRoleFromData = $user['role'];
-                                }
+                                $userRoleFromData = $user['role'] ?? '';
                                 if ($userRoleFromData === 'admin') {
                                     echo 'selected';
                                 }
@@ -140,10 +117,7 @@
                     <!-- Delete Form - Hidden for admin's own account and main admin -->
                     <?php 
                     $userCanBeDeleted = true;
-                    $userUsernameFromData = '';
-                    if (isset($user['username'])) {
-                        $userUsernameFromData = $user['username'];
-                    }
+                    $userUsernameFromData = $user['username'] ?? '';
                     
                     // Check if this is current user
                     if ($userUsernameFromData === $currentUsername) {
@@ -160,11 +134,7 @@
                     <form method="POST" style="display: inline;" onsubmit="return confirm('Weet je zeker dat je deze gebruiker wilt verwijderen?')">
                         <input type="hidden" name="action" value="delete_user">
                         <input type="hidden" name="user_id" value="<?php 
-                            $userIdForDelete = '';
-                            if (isset($user['id'])) {
-                                $userIdForDelete = $user['id'];
-                            }
-                            echo htmlspecialchars($userIdForDelete); 
+                            echo htmlspecialchars($user['id'] ?? ''); 
                         ?>">
                         <button type="submit" class="delete-btn" style="width: 240px;">Verwijderen</button>
                     </form>
